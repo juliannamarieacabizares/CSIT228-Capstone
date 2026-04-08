@@ -1,14 +1,23 @@
 package com.group8.csit228capstone;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
 
-public class HelloController {
+public class MainController {
     @FXML
-    private Label welcomeText;
+    private Button btnLogout;
+    @FXML
+    private Button btnEvents;
+    @FXML
+    private Button btnBook;
+    @FXML
+    private Button btnView;
+    @FXML
+    private TableView<?> eventTable;
 
     @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
+    public void handleEventsNavigation(ActionEvent actionEvent) {
     }
 }
