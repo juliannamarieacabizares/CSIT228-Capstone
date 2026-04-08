@@ -5,8 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-import java.sql.SQLOutput;
-
 public class AdminController {
     @FXML
     private TextField textTitle;
