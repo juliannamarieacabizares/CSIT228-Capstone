@@ -1,12 +1,12 @@
 # Event Ticketing System
 
 ## Group Members
-- [Your Name]
-- [Friend 1 Name]
-- [Friend 2 Name]
-- [Friend 3 Name]
-- [Friend 4 Name]
-- [Friend 5 Name]
+- Cabizares Julianna Marie A.
+- Muaña Kenric 
+- Lazarte Matt Lister F.
+- Cabrillos John Harvey C.
+- Tesaluna France Loyd P.
+- Salado Samuel O.
 
 ## Project Description
 The Event Ticketing System is a desktop-based application that allows users to browse events, select seats, and book tickets. It helps manage event reservations efficiently and avoids manual booking errors such as overbooking and lost records.
