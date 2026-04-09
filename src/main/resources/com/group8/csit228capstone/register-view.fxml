@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.group8.csit228capstone.RegisterController"
+      prefWidth="600" prefHeight="400"
+      alignment="CENTER" spacing="15"
+      style="-fx-background-color: #212121;">
+
+    <padding>
+        <Insets top="40" right="40" bottom="40" left="40"/>
+    </padding>
+
+    <!-- Header -->
+    <Label text="Create Account" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+    <!-- Username -->
+    <Label text="Username" style="-fx-text-fill: white;"/>
+    <TextField fx:id="txtUsername" promptText="Enter username" prefWidth="300"/>
+
+    <!-- Email -->
+    <Label text="Email" style="-fx-text-fill: white;"/>
+    <TextField fx:id="txtEmail" promptText="Enter email" prefWidth="300"/>
+
+    <!-- Password -->
+    <Label text="Password" style="-fx-text-fill: white;"/>
+    <PasswordField fx:id="txtPassword" promptText="Enter password" prefWidth="300"/>
+
+    <!-- Buttons -->
+    <Button fx:id="btnRegister" text="Register"
+            onAction="#handleRegister"
+            style="-fx-background-color: #8B0000; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 200;"/>
+
+    <Button fx:id="btnBack" text="Back to Login"
+            onAction="#handleBack"
+            style="-fx-background-color: #424242; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 200;"/>
+
+</VBox>
