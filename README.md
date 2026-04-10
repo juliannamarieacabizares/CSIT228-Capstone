@@ -38,7 +38,7 @@ Planned use of classes such as:
 - `DatabaseConnection` - Singleton pattern for DB access
 
 ### JavaFX GUI
-- FXML files for all views (`LoginView`, `MainView`, `EventForm`, `SeatSelection`)
+- FXML files for all views (`LoginView`, `MainView`, `AdminView`, `RegisterView`, `SeatSelectionView`)
 - TableView for displaying events
 - Forms for data entry
 - Scene Builder for layout design
@@ -59,3 +59,23 @@ Planned use of classes such as:
 - All group members added as collaborators
 
 ## Project Structure
+CSIT228-Capstone/
+├── src/
+│ └── main/
+│ ├── java/com/group8/csit228capstone/
+│ │ ├── LoginController.java
+│ │ ├── MainController.java
+│ │ ├── AdminController.java
+│ │ ├── RegisterController.java
+│ │ └── SeatSelectionController.java
+│ └── resources/com/group8/csit228capstone/
+│ ├── LoginView.fxml
+│ ├── MainView.fxml
+│ ├── AdminView.fxml
+│ ├── RegisterView.fxml
+│ └── SeatSelectionView.fxml
+├── diagrams/
+│ ├── use-case-diagram.png
+│ └── class-diagram.png
+├── README.md
+└── .gitignore
