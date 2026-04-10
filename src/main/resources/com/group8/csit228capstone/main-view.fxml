@@ -19,9 +19,9 @@
    <left>
       <VBox maxWidth="1.7976931348623157E308" prefHeight="150.0" prefWidth="140.0" spacing="15.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="btnEvents" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleEventsNavigation" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #1C4D8D;;" text="Events" textFill="WHITE" />
-            <Button fx:id="btnBook" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #1C4D8D;;" text="Book Ticket" textFill="#fff8f8" />
-            <Button fx:id="btnView" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #1C4D8D;;" text="View Bookings" textFill="WHITE" />
+            <Button fx:id="btnEvents" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleEventsNavigation" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #1C4D8D;" text="Events" textFill="WHITE" />
+            <Button fx:id="btnBook" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #1C4D8D;" text="Book Ticket" textFill="#fff8f8" />
+            <Button fx:id="btnView" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #1C4D8D;" text="View Bookings" textFill="WHITE" />
             <Button fx:id="btnLogout" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #1C4D8D;" text="Logout" textFill="WHITE" />
          </children>
          <padding>
