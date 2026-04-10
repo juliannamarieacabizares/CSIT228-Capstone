@@ -38,7 +38,7 @@ Planned use of classes such as:
 - `DatabaseConnection` - Singleton pattern for DB access
 
 ### JavaFX GUI
-- FXML files for all views (`LoginView`, `MainView`, `AdminView`, `RegisterView`, `SeatSelectionView`)
+- FXML files for all views (`loginView`, `mainView`, `adminView`, `registerView`, `seatView`)
 - TableView for displaying events
 - Forms for data entry
 - Scene Builder for layout design
