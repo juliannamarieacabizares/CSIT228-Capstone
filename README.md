@@ -63,9 +63,10 @@ CSIT228-Capstone/
 ├── src/
 │ └── main/
 │ ├── java/com/group8/csit228capstone/
+| | ├── AdminController.java
 │ │ ├── LoginController.java
+│ │ ├── MainApplication.java
 │ │ ├── MainController.java
-│ │ ├── AdminController.java
 │ │ ├── RegisterController.java
 │ │ └── SeatSelectionController.java
 │ └── resources/com/group8/csit228capstone/
