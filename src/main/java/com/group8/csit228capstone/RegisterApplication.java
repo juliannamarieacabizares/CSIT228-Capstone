@@ -6,19 +6,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class RegisterApplication extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage stage) throws IOException{
         // Load the Register view
-        Parent root = FXMLLoader.load(getClass().getResource("register-view.fxml"));
-
-        Scene scene = new Scene(root, 600, 400);
-
-        primaryStage.setTitle("Register - CSIT228 Capstone");
-        primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
-        primaryStage.show();
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("register-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+        stage.setTitle("Admin View");
+        stage.setScene(scene);
+        stage.show();
     }
 
 
