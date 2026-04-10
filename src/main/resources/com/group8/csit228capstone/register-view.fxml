@@ -10,13 +10,36 @@
         <Insets bottom="40" left="40" right="40" top="40" />
     </padding>
 
-    <Label style="-fx-text-fill: #0F2854;" text="Create Account">
+    <Label text="CREATE AN ACCOUNT" textFill="#0f2854">
       <font>
          <Font name="System Bold" size="24.0" />
       </font></Label>
-    <TextField fx:id="txtUsername" prefWidth="300" promptText="Enter username" />
-    <TextField fx:id="txtEmail" prefWidth="300" promptText="Enter email" />
-    <PasswordField fx:id="txtPassword" prefWidth="300" promptText="Enter password" />
+   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+      <children>
+         <Label prefWidth="150.0" text="Enter Username:" textFill="#0f2854">
+            <font>
+               <Font name="System Bold" size="14.0" />
+            </font></Label>
+          <TextField fx:id="txtUsername" prefWidth="250.0" />
+      </children></HBox>
+   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+      <children>
+         <Label prefWidth="150.0" text="Enter Email:" textFill="#0f2854">
+            <font>
+               <Font name="System Bold" size="14.0" />
+            </font></Label>
+          <TextField fx:id="txtEmail" prefWidth="250.0" />
+      </children>
+   </HBox>
+   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+      <children>
+         <Label prefWidth="150.0" text="Enter Password:" textFill="#0f2854">
+            <font>
+               <Font name="System Bold" size="14.0" />
+            </font></Label>
+          <PasswordField fx:id="txtPassword" prefWidth="250.0" />
+      </children>
+   </HBox>
     <Button fx:id="btnRegister" onAction="#handleRegister" style="-fx-background-color: #1C4D8D; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 200;" text="Register" />
     <Button fx:id="btnBack" onAction="#handleBack" prefWidth="200.0" style="-fx-background-color: #1C4D8D; -fx-text-fill: white;" text="Back to Login">
       <font>

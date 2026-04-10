@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="20.0" style="-fx-background-color: #BDE8F5;;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group8.csit228capstone.SeatSelectionController">
+   <children>
+      <Label text="SELECT YOUR SEATS" textFill="#0f2854">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <GridPane alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Button fx:id="seatA1" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="A1" textFill="#1c4d8d" />
+            <Button fx:id="seatB1" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="B1" textFill="#1c4d8d" GridPane.columnIndex="1" />
+            <Button fx:id="seatC1" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="C1" textFill="#1c4d8d" GridPane.columnIndex="2" />
+            <Button fx:id="seatD1" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="D1" textFill="#1c4d8d" GridPane.columnIndex="3" />
+            <Button fx:id="seatE1" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="E1" textFill="#1c4d8d" GridPane.columnIndex="4" />
+            <Button fx:id="seatA2" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="A2" textFill="#1c4d8d" GridPane.rowIndex="1" />
+            <Button fx:id="seatB2" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="B2" textFill="#1c4d8d" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Button fx:id="seatC2" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="C2" textFill="#1c4d8d" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Button fx:id="seatD2" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="D2" textFill="#1c4d8d" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <Button fx:id="seatE2" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="E2" textFill="#1c4d8d" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+            <Button fx:id="seatA3" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="A3" textFill="#1c4d8d" GridPane.rowIndex="2" />
+            <Button fx:id="seatB3" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="B3" textFill="#1c4d8d" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Button fx:id="seatC3" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="C3" textFill="#1c4d8d" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <Button fx:id="seatD3" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="D3" textFill="#1c4d8d" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+            <Button fx:id="seatE3" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="E3" textFill="#1c4d8d" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+            <Button fx:id="seatA4" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="A4" textFill="#1c4d8d" GridPane.rowIndex="3" />
+            <Button fx:id="seatB4" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="B4" textFill="#1c4d8d" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Button fx:id="seatC4" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="C4" textFill="#1c4d8d" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <Button fx:id="seatD4" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="D4" textFill="#1c4d8d" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+            <Button fx:id="seatE4" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="E4" textFill="#1c4d8d" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+            <Button fx:id="seatA5" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="A5" textFill="#1c4d8d" GridPane.rowIndex="4" />
+            <Button fx:id="seatB5" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="B5" textFill="#1c4d8d" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Button fx:id="seatC5" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="C5" textFill="#1c4d8d" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+            <Button fx:id="seatE5" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="E5" textFill="#1c4d8d" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+            <Button fx:id="seatD5" mnemonicParsing="false" onAction="#handleSeatSelection" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5;" text="D5" textFill="#1c4d8d" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+         </children>
+      </GridPane>
+      <GridPane alignment="CENTER" prefHeight="61.0" prefWidth="600.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="NEVER" maxWidth="95.0" minWidth="10.0" prefWidth="90.0" />
+          <ColumnConstraints hgrow="NEVER" maxWidth="111.0" minWidth="10.0" prefWidth="110.0" />
+            <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Button mnemonicParsing="false" prefWidth="75.0" style="-fx-background-color: #8B0000;" text="Red" textFill="WHITE" />
+            <Label text="&quot;Occupied&quot;" GridPane.columnIndex="1">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Label>
+            <Label text="&quot;Available&quot;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Label>
+            <Button mnemonicParsing="false" prefWidth="75.0" style="-fx-background-color: #1C4D8D;" text="Blue" textFill="WHITE" GridPane.rowIndex="1" />
+            <Label fx:id="textTotal" text="Total: ₱0.00" textFill="#0f2854" GridPane.columnIndex="3">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font></Label>
+         </children>
+      </GridPane>
+      <HBox alignment="CENTER" prefHeight="38.0" prefWidth="600.0" spacing="10.0">
+         <children>
+            <Button fx:id="btnConfirm" mnemonicParsing="false" onAction="#handleConfirm" prefWidth="100.0" style="-fx-background-color: #1C4D8D;" text="CONFIRM" textFill="WHITE" />
+            <Button fx:id="btnBack" mnemonicParsing="false" onAction="#handleBack" prefWidth="100.0" style="-fx-background-color: #607D8B;" text="BACK" textFill="WHITE" />
+         </children></HBox>
+   </children>
+</VBox>
