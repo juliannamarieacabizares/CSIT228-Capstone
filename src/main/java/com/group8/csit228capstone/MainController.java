@@ -20,6 +20,9 @@ public class MainController {
     private Button btnView;
 
     @FXML
+    private Button btnManageEvents;
+
+    @FXML
     private TableView<?> eventTable;
 
     // User session fields
@@ -39,12 +42,22 @@ public class MainController {
         this.currentUserId = userId;
         this.currentUserRole = role;
         System.out.println("User logged in: " + userName + " (Role: " + role + ")");
+
+        setupRoleAccess();
+    }
+
+    private void setupRoleAccess() {
+        if ("admin".equals(currentUserRole)) {
+            enableAdminMode();
+        } else {
+            btnManageEvents.setVisible(false);
+        }
     }
 
     // Called for admin users to show admin features
     public void enableAdminMode() {
         System.out.println("Admin mode enabled");
-        // TODO: Make "Manage Events" button visible
-        // btnManageEvents.setVisible(true);
+
+        btnManageEvents.setVisible(true);
     }
 }
