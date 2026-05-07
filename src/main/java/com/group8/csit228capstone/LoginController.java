@@ -99,4 +99,17 @@ public class LoginController {
         }
         return null;
     }
+
+    @FXML
+    public void handleRegisterNavigation(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("register-view.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Event Ticketing System - Register");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
