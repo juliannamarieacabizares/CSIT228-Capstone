@@ -46,4 +46,11 @@
          </columnResizePolicy>
       </TableView>
    </center>
+    <bottom>
+        <Label fx:id="lblStatus" text="Ready" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="10" top="10"/>
+            </padding>
+        </Label>
+    </bottom>
 </BorderPane>

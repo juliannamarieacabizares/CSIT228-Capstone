@@ -3,6 +3,7 @@ package com.group8.csit228capstone;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 
 public class MainController {
@@ -25,14 +26,16 @@ public class MainController {
     @FXML
     private TableView<?> eventTable;
 
-    // User session fields
+    @FXML
+    private Label lblStatus;  // Make sure this exists in FXML
+
+    // Session fields
     private String currentUserName;
     private int currentUserId;
     private String currentUserRole;
 
     @FXML
     public void handleEventsNavigation(ActionEvent actionEvent) {
-        // TODO: Refresh events
         System.out.println("Events button clicked");
     }
 
@@ -41,23 +44,21 @@ public class MainController {
         this.currentUserName = userName;
         this.currentUserId = userId;
         this.currentUserRole = role;
-        System.out.println("User logged in: " + userName + " (Role: " + role + ")");
 
-        setupRoleAccess();
-    }
-
-    private void setupRoleAccess() {
-        if ("admin".equals(currentUserRole)) {
-            enableAdminMode();
-        } else {
-            btnManageEvents.setVisible(false);
+        // Display welcome message
+        if (lblStatus != null) {
+            lblStatus.setText("Welcome, " + userName + "!");
         }
+
+        System.out.println("User logged in: " + userName + " (Role: " + role + ")");
     }
 
     // Called for admin users to show admin features
     public void enableAdminMode() {
         System.out.println("Admin mode enabled");
-
-        btnManageEvents.setVisible(true);
+        if (btnManageEvents != null) {
+            btnManageEvents.setVisible(true);
+            btnManageEvents.setManaged(true);
+        }
     }
 }

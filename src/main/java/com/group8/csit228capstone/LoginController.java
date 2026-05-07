@@ -57,6 +57,9 @@ public class LoginController {
                 // Get MainController and pass user info
                 MainController mainController = loader.getController();
                 mainController.setUserInfo(loggedInUser.getName(), loggedInUser.getUserId(), loggedInUser.getRole());
+                if ("admin".equals(loggedInUser.getRole())) {
+                    mainController.enableAdminMode();
+                }
 
                 // Close login window and open dashboard
                 Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
