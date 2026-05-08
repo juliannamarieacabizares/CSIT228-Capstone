@@ -47,6 +47,7 @@ public class SeatSelectionController {
         ensureSeatsExist();
         loadSeatStatusFromDatabase();
         updateConfirmButton();
+        updateTotalDisplay();
     }
 
     private void ensureSeatsExist() {
@@ -141,7 +142,7 @@ public class SeatSelectionController {
                     seatBtn.setStyle(seatBtn.getStyle() + "-fx-background-color: #f44336; -fx-text-fill: white;");
                     seatBtn.setDisable(true);
                 } else {
-                    seatBtn.setStyle("-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5; -fx-text-fill: #1c4d8d; -fx-font-weight: bold;");
+                    seatBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-radius: 5;");
                     seatBtn.setOnAction(e -> handleSeatSelection(seatBtn, seatNumber));
                 }
 
@@ -164,7 +165,7 @@ public class SeatSelectionController {
 
     private void handleSeatSelection(Button clickedButton, String seatNumber) {
         if (selectedSeats.contains(seatNumber)) {
-            clickedButton.setStyle("-fx-background-color: white; -fx-border-color: #1C4D8D; -fx-border-radius: 5; -fx-text-fill: #1c4d8d; -fx-font-weight: bold;");
+            clickedButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-radius: 5;");
             selectedSeats.remove(seatNumber);
             System.out.println("Seat deselected: " + seatNumber);
         } else {

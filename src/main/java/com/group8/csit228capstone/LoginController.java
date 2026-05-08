@@ -49,6 +49,11 @@ public class LoginController {
         User loggedInUser = validateLogin(email, password);
 
         if (loggedInUser != null) {
+            // DEBUG: Print user info to console
+            System.out.println("✅ LOGIN SUCCESS - UserID: " + loggedInUser.getUserId() +
+                    ", Name: " + loggedInUser.getName() +
+                    ", Role: " + loggedInUser.getRole());
+
             try {
                 // Load the main dashboard
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("main-view.fxml"));

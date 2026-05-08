@@ -69,7 +69,8 @@ public class MainController {
         loadEvents();
     }
 
-    private void loadEvents() {
+    // Made PUBLIC so BookingHistoryController can call it
+    public void loadEvents() {
         try {
             Connection conn = DatabaseConnection.getInstance().getConnection();
             String sql = """
@@ -140,7 +141,23 @@ public class MainController {
 
     @FXML
     private void handleViewBookings() {
-        lblStatus.setText("Booking history - Coming soon");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("BookingHistoryView.fxml"));
+            Scene scene = new Scene(loader.load());
+
+            BookingHistoryController controller = loader.getController();
+            controller.setUserId(currentUserId);
+            controller.setMainController(this);  // Pass reference for auto-refresh
+
+            Stage stage = new Stage();
+            stage.setTitle("My Booking History");
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblStatus.setText("Error opening booking history");
+        }
     }
 
     @FXML
