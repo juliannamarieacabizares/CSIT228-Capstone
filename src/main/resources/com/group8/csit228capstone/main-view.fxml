@@ -33,10 +33,10 @@
    <center>
       <TableView fx:id="eventTable" prefHeight="305.0" prefWidth="461.0" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn prefWidth="75.0" text="Event Name" />
-          <TableColumn prefWidth="75.0" text="Date" />
-            <TableColumn prefWidth="75.0" text="Location" />
-            <TableColumn prefWidth="75.0" text="Available Seats" />
+          <TableColumn fx:id="colTitle" prefWidth="150.0" text="Event Name" />
+          <TableColumn fx:id="colDate" prefWidth="120.0" text="Date" />
+          <TableColumn fx:id="colLocation" prefWidth="130.0" text="Location" />
+          <TableColumn fx:id="colAvailableSeats" prefWidth="100.0" text="Available Seats" />
         </columns>
          <BorderPane.margin>
             <Insets bottom="20.0" right="20.0" />
