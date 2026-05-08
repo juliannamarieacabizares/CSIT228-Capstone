@@ -15,23 +15,9 @@ public class Event {
         this.availableSeats = availableSeats;
     }
 
-    public int getEventId() {
-        return eventId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public int getAvailableSeats() {
-        return availableSeats;
-    }
+    public int getEventId() { return eventId; }
+    public String getTitle() { return title; }
+    public String getDate() { return date; }
+    public String getLocation() { return location; }
+    public int getAvailableSeats() { return availableSeats; }
 }
