@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -200,58 +201,69 @@ public class SeatSelectionController {
     @FXML
     private void handleConfirm() {
         if (selectedSeats.isEmpty()) {
+            showAlert(AlertType.WARNING, "No Selection", "Please select at least one seat.");
             return;
         }
-
+        Connection conn = null;
         try {
-            Connection conn = DatabaseConnection.getInstance().getConnection();
-            int bookingId = -1;
-
+            conn = DatabaseConnection.getInstance().getConnection();
+            conn.setAutoCommit(false);
             String bookingSql = "INSERT INTO bookings (userId, eventId, bookingDate) VALUES (?, ?, ?)";
-            PreparedStatement bookingStmt = conn.prepareStatement(bookingSql);
-            bookingStmt.setInt(1, currentUserId);
-            bookingStmt.setInt(2, currentEvent.getEventId());
-            bookingStmt.setString(3, LocalDate.now().toString());
-            bookingStmt.executeUpdate();
-
-            String lastIdSql = "SELECT last_insert_rowid()";
-            PreparedStatement lastIdStmt = conn.prepareStatement(lastIdSql);
-            ResultSet rs = lastIdStmt.executeQuery();
-            if (rs.next()) {
-                bookingId = rs.getInt(1);
+            try (PreparedStatement bookingStmt = conn.prepareStatement(bookingSql)) {
+                bookingStmt.setInt(1, currentUserId);
+                bookingStmt.setInt(2, currentEvent.getEventId());
+                bookingStmt.setString(3, LocalDate.now().toString());
+                bookingStmt.executeUpdate();
             }
 
-            for (String seatNumber : selectedSeats) {
-                String ticketSql = "INSERT INTO tickets (bookingId, seatNumber) VALUES (?, ?)";
-                PreparedStatement ticketStmt = conn.prepareStatement(ticketSql);
-                ticketStmt.setInt(1, bookingId);
-                ticketStmt.setString(2, seatNumber);
-                ticketStmt.executeUpdate();
-
-                String updateSql = "UPDATE seats SET status = 'reserved' WHERE eventId = ? AND seatNumber = ?";
-                PreparedStatement updateStmt = conn.prepareStatement(updateSql);
-                updateStmt.setInt(1, currentEvent.getEventId());
-                updateStmt.setString(2, seatNumber);
-                updateStmt.executeUpdate();
+            int bookingId = -1;
+            try (PreparedStatement lastIdStmt = conn.prepareStatement("SELECT last_insert_rowid()")) {
+                ResultSet rs = lastIdStmt.executeQuery();
+                if (rs.next()) {
+                    bookingId = rs.getInt(1);
+                }
             }
+            if (bookingId == -1) throw new SQLException("Failed to retrieve booking ID.");
 
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Booking Successful");
-            alert.setHeaderText(null);
-            alert.setContentText("Successfully booked " + selectedSeats.size() + " seat(s):\n" + String.join(", ", selectedSeats));
-            alert.showAndWait();
+            String ticketSql = "INSERT INTO tickets (bookingId, seatNumber) VALUES (?, ?)";
+            String updateSeatSql = "UPDATE seats SET status = 'reserved' WHERE eventId = ? AND seatNumber = ?";
 
-            Stage stage = (Stage) btnConfirm.getScene().getWindow();
-            stage.close();
+            try (PreparedStatement ticketStmt = conn.prepareStatement(ticketSql);
+                 PreparedStatement updateStmt = conn.prepareStatement(updateSeatSql)) {
+                for (String seatNumber : selectedSeats) {
+                    ticketStmt.setInt(1, bookingId);
+                    ticketStmt.setString(2, seatNumber);
+                    ticketStmt.addBatch();
+                    updateStmt.setInt(1, currentEvent.getEventId());
+                    updateStmt.setString(2, seatNumber);
+                    updateStmt.addBatch();
+                }
+                ticketStmt.executeBatch();
+                updateStmt.executeBatch();
+            }
+            conn.commit();
+            showAlert(AlertType.INFORMATION, "Success", "Booking confirmed for: " + String.join(", ", selectedSeats));
+            handleBack();
 
         } catch (Exception e) {
+            if (conn != null) {
+                try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
             e.printStackTrace();
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Booking Failed");
-            alert.setHeaderText(null);
-            alert.setContentText("Failed to book seats: " + e.getMessage());
-            alert.showAndWait();
+            showAlert(AlertType.ERROR, "Booking Failed", "Error: " + e.getMessage());
+        } finally {
+            if (conn != null) {
+                try { conn.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
+            }
         }
+    }
+
+    private void showAlert(AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     @FXML
