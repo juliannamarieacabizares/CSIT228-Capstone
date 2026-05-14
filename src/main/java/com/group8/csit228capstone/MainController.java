@@ -74,7 +74,7 @@ public class MainController {
         try {
             Connection conn = DatabaseConnection.getInstance().getConnection();
             String sql = """
-                SELECT e.eventId, e.title, e.date, e.location, e.totalSeats,
+                SELECT e.eventId, e.title, e.description, e.date, e.location, e.totalSeats,
                        (e.totalSeats - (SELECT COUNT(*) FROM seats s WHERE s.eventId = e.eventId AND s.status = 'reserved')) as availableSeats
                 FROM events e
                 ORDER BY e.date
@@ -88,6 +88,7 @@ public class MainController {
                 Event event = new Event(
                         rs.getInt("eventId"),
                         rs.getString("title"),
+                        rs.getString("description"),
                         rs.getString("date"),
                         rs.getString("location"),
                         rs.getInt("availableSeats")
@@ -157,6 +158,21 @@ public class MainController {
         } catch (Exception e) {
             e.printStackTrace();
             lblStatus.setText("Error opening booking history");
+        }
+    }
+
+    @FXML
+    private void handleManageEvents() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("admin-view.fxml"));
+            Scene scene = new Scene(loader.load());
+            Stage stage = new Stage();
+            stage.setTitle("Admin Event Management");
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblStatus.setText("Error opening admin management");
         }
     }
 

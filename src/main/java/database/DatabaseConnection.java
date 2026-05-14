@@ -15,6 +15,7 @@ public class DatabaseConnection {
         try {
             connect();
             createTables();
+            upgradeSchema();
             insertSampleData();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -31,7 +32,26 @@ public class DatabaseConnection {
     private void connect() throws SQLException {
         String url = "jdbc:sqlite:eventticketing.db";
         connection = DriverManager.getConnection(url);
+        enableForeignKeys();
         System.out.println("Database connected successfully!");
+    }
+
+    private void enableForeignKeys() {
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute("PRAGMA foreign_keys = ON");
+        } catch (SQLException e) {
+            System.out.println("Unable to enable foreign keys: " + e.getMessage());
+        }
+    }
+
+    private void upgradeSchema() {
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute("ALTER TABLE bookings ADD COLUMN paymentStatus TEXT DEFAULT 'Paid'");
+        } catch (SQLException e) {
+            if (!e.getMessage().toLowerCase().contains("duplicate column name")) {
+                System.out.println("Schema upgrade warning: " + e.getMessage());
+            }
+        }
     }
 
     private void createTables() {
@@ -72,6 +92,7 @@ public class DatabaseConnection {
                 userId INTEGER NOT NULL,
                 eventId INTEGER NOT NULL,
                 bookingDate TEXT NOT NULL,
+                paymentStatus TEXT NOT NULL DEFAULT 'Paid',
                 FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE,
                 FOREIGN KEY (eventId) REFERENCES events(eventId) ON DELETE CASCADE
             )

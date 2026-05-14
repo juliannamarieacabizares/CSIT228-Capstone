@@ -20,7 +20,7 @@
         <VBox maxWidth="1.7976931348623157E308" prefHeight="150.0" prefWidth="140.0" spacing="15.0" BorderPane.alignment="CENTER">
             <children>
                 <Button fx:id="btnEvents" onAction="#handleEventsNavigation" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #1C4D8D;" text="Events" textFill="WHITE" />
-                <Button fx:id="btnManageEvents" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #1C4D8D;" text="Manage Events" textFill="WHITE" visible="false"/>
+                <Button fx:id="btnManageEvents" onAction="#handleManageEvents" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #1C4D8D;" text="Manage Events" textFill="WHITE" visible="false"/>
                 <Button fx:id="btnBook" onAction="#handleBookTicket" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #1C4D8D;" text="Book Ticket" textFill="WHITE" />
                 <Button fx:id="btnView" onAction="#handleViewBookings" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #1C4D8D;" text="View Bookings" textFill="WHITE" />
                 <Button fx:id="btnLogout" onAction="#handleLogout" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #1C4D8D;" text="Logout" textFill="WHITE" />
