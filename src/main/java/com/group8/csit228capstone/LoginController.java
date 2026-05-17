@@ -110,9 +110,13 @@ public class LoginController {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("register-view.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
             stage.setTitle("Event Ticketing System - Register");
-            stage.show();
+            stage.setWidth(500);
+            stage.setHeight(650);
+            stage.setMinWidth(450);
+            stage.setMinHeight(550);
         } catch (IOException e) {
             e.printStackTrace();
         }

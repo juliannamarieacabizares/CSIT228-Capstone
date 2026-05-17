@@ -1,34 +1,39 @@
 package com.group8.csit228capstone;
 
 import database.DatabaseConnection;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdminController {
+
+    // Event Form Fields
     @FXML
     private TextField textTitle;
     @FXML
     private TextField textDescription;
     @FXML
-    private TextField textDate;
+    private DatePicker textDate;
     @FXML
     private TextField textLocation;
     @FXML
     private TextField textTotalSeats;
 
+    // Buttons
     @FXML
     private Button btnSave;
     @FXML
@@ -38,17 +43,11 @@ public class AdminController {
     @FXML
     private Button btnClear;
     @FXML
-    private Button btnAllBookings;
+    private Button btnBackToDashboard;
     @FXML
     private Button btnRefreshBookings;
 
-    @FXML
-    private TabPane tabPane;
-    @FXML
-    private Tab tabEvents;
-    @FXML
-    private Tab tabBookings;
-
+    // Events Table
     @FXML
     private TableView<Event> tblEvents;
     @FXML
@@ -62,56 +61,143 @@ public class AdminController {
     @FXML
     private TableColumn<Event, Integer> colAvailableSeats;
 
+    // All Bookings Table
     @FXML
-    private TableView<AdminBooking> tblBookingsTable;
+    private TableView<AdminBooking> tblAllBookings;
     @FXML
-    private TableColumn<AdminBooking, String> colCustomerName;
+    private TableColumn<AdminBooking, Integer> colAllBookingId;
     @FXML
-    private TableColumn<AdminBooking, String> colBookingEventTitle;
+    private TableColumn<AdminBooking, String> colAllCustomerName;
     @FXML
-    private TableColumn<AdminBooking, String> colBookingSeatNumber;
+    private TableColumn<AdminBooking, String> colAllEventTitle;
     @FXML
-    private TableColumn<AdminBooking, String> colBookingDate;
+    private TableColumn<AdminBooking, String> colAllSeatNumber;
     @FXML
-    private TableColumn<AdminBooking, String> colPaymentStatus;
+    private TableColumn<AdminBooking, String> colAllBookingDate;
+    @FXML
+    private TableColumn<AdminBooking, String> colAllPaymentStatus;
 
+    // Status Labels
     @FXML
     private Label lblEventStatus;
     @FXML
     private Label lblBookingStatus;
+
+    // TabPane
     @FXML
-    private ProgressIndicator progressIndicator;
+    private TabPane tabPane;
     @FXML
-    private StackPane eventStack;
+    private Tab tabEvents;
+    @FXML
+    private Tab tabBookings;
 
     private final ObservableList<Event> eventList = FXCollections.observableArrayList();
-    private final ObservableList<AdminBooking> bookingList = FXCollections.observableArrayList();
+    private final ObservableList<AdminBooking> allBookingsList = FXCollections.observableArrayList();
     private Event selectedEvent;
+
+    // User info fields
+    private String currentUserName;
+    private int currentUserId;
+    private String currentUserRole;
+
+    public void setUserInfo(String userName, int userId, String role) {
+        this.currentUserName = userName;
+        this.currentUserId = userId;
+        this.currentUserRole = role;
+    }
 
     @FXML
     public void initialize() {
+        // Setup Events Table columns
+        colEventId.setCellValueFactory(new PropertyValueFactory<>("eventId"));
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         colLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
         colAvailableSeats.setCellValueFactory(new PropertyValueFactory<>("availableSeats"));
 
-        colCustomerName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        colBookingEventTitle.setCellValueFactory(new PropertyValueFactory<>("eventTitle"));
-        colBookingSeatNumber.setCellValueFactory(new PropertyValueFactory<>("seatNumber"));
-        colBookingDate.setCellValueFactory(new PropertyValueFactory<>("bookingDate"));
-        colPaymentStatus.setCellValueFactory(new PropertyValueFactory<>("paymentStatus"));
+        // Setup All Bookings Table columns
+        colAllBookingId.setCellValueFactory(new PropertyValueFactory<>("bookingId"));
+        colAllCustomerName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        colAllEventTitle.setCellValueFactory(new PropertyValueFactory<>("eventTitle"));
+        colAllSeatNumber.setCellValueFactory(new PropertyValueFactory<>("seatNumber"));
+        colAllBookingDate.setCellValueFactory(new PropertyValueFactory<>("bookingDate"));
+        colAllPaymentStatus.setCellValueFactory(new PropertyValueFactory<>("paymentStatus"));
 
         tblEvents.setItems(eventList);
-        tblBookingsTable.setItems(bookingList);
+        tblAllBookings.setItems(allBookingsList);
 
-        tblEvents.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> populateForm(newSelection));
-        progressIndicator.setVisible(false);
         loadEventsInBackground();
+
+        // Selection listener for Events table
+        tblEvents.getSelectionModel().selectedItemProperty().addListener((obs, old, selected) -> {
+            if (selected != null) {
+                populateForm(selected);
+            }
+        });
     }
 
-    private void loadEventsInBackground() {
-        progressIndicator.setVisible(true);
-        lblEventStatus.setText("Loading events...");
+    @FXML
+    private void handleBackToDashboard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("main-view.fxml"));
+            Scene scene = new Scene(loader.load());
+
+            MainController mainController = loader.getController();
+            mainController.setUserInfo(currentUserName, currentUserId, currentUserRole);
+            if ("admin".equals(currentUserRole)) {
+                mainController.enableAdminMode();
+            }
+
+            Stage stage = (Stage) btnBackToDashboard.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("Event Dashboard");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to return to dashboard");
+        }
+    }
+
+    @FXML
+    private void handleRefreshBookings() {
+        loadAllBookings();
+    }
+
+    private void loadAllBookings() {
+        allBookingsList.clear();
+        if (lblBookingStatus != null) lblBookingStatus.setText("Loading bookings...");
+
+        String sql = """
+            SELECT b.bookingId, u.name AS customerName, e.title AS eventTitle, 
+                   t.seatNumber, b.bookingDate, COALESCE(b.paymentStatus, 'Pending') AS paymentStatus
+            FROM bookings b
+            JOIN users u ON b.userId = u.userId
+            JOIN events e ON b.eventId = e.eventId
+            JOIN tickets t ON b.bookingId = t.bookingId
+            ORDER BY b.bookingDate DESC
+            """;
+
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                allBookingsList.add(new AdminBooking(
+                        rs.getString("customerName"),
+                        rs.getString("eventTitle"),
+                        rs.getString("seatNumber"),
+                        rs.getString("bookingDate"),
+                        rs.getString("paymentStatus")
+                ));
+            }
+            if (lblBookingStatus != null) lblBookingStatus.setText("Loaded " + allBookingsList.size() + " bookings");
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (lblBookingStatus != null) lblBookingStatus.setText("Error loading bookings");
+        }
+    }
+
+    public void loadEventsInBackground() {
+        if (lblEventStatus != null) lblEventStatus.setText("Loading events...");
 
         Task<List<Event>> loadTask = new Task<>() {
             @Override
@@ -122,14 +208,12 @@ public class AdminController {
 
         loadTask.setOnSucceeded(event -> {
             eventList.setAll(loadTask.getValue());
-            lblEventStatus.setText("Loaded " + eventList.size() + " events");
-            progressIndicator.setVisible(false);
+            if (lblEventStatus != null) lblEventStatus.setText("Loaded " + eventList.size() + " events");
         });
 
         loadTask.setOnFailed(event -> {
             loadTask.getException().printStackTrace();
-            lblEventStatus.setText("Error loading events");
-            progressIndicator.setVisible(false);
+            if (lblEventStatus != null) lblEventStatus.setText("Error loading events");
         });
 
         Thread thread = new Thread(loadTask, "AdminEventLoader");
@@ -172,19 +256,22 @@ public class AdminController {
         }
         textTitle.setText(event.getTitle());
         textDescription.setText(event.getDescription());
-        textDate.setText(event.getDate());
+        try {
+            textDate.setValue(LocalDate.parse(event.getDate()));
+        } catch (Exception e) {
+            textDate.setValue(null);
+        }
         textLocation.setText(event.getLocation());
         textTotalSeats.setText(String.valueOf(fetchEventTotalSeats(event.getEventId())));
     }
 
     private int fetchEventTotalSeats(int eventId) {
-        try (Connection conn = DatabaseConnection.getInstance().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement("SELECT totalSeats FROM events WHERE eventId = ?")) {
+        Connection conn = DatabaseConnection.getInstance().getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement("SELECT totalSeats FROM events WHERE eventId = ?")) {
             pstmt.setInt(1, eventId);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("totalSeats");
-                }
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("totalSeats");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -198,32 +285,52 @@ public class AdminController {
             return;
         }
 
-        try (Connection conn = DatabaseConnection.getInstance().getConnection()) {
-            String insertSql = "INSERT INTO events (title, description, date, location, totalSeats) VALUES (?, ?, ?, ?, ?)";
-            try (PreparedStatement pstmt = conn.prepareStatement(insertSql)) {
-                pstmt.setString(1, textTitle.getText().trim());
-                pstmt.setString(2, textDescription.getText().trim());
-                pstmt.setString(3, textDate.getText().trim());
-                pstmt.setString(4, textLocation.getText().trim());
-                pstmt.setInt(5, Integer.parseInt(textTotalSeats.getText().trim()));
-                pstmt.executeUpdate();
-            }
+        String title = textTitle.getText().trim();
+        String desc = textDescription.getText().trim();
+        String date = textDate.getValue() != null ? textDate.getValue().toString() : "";
+        String location = textLocation.getText().trim();
+        int totalSeats = Integer.parseInt(textTotalSeats.getText().trim());
 
-            int eventId;
-            try (PreparedStatement idStmt = conn.prepareStatement("SELECT last_insert_rowid()")) {
-                ResultSet rs = idStmt.executeQuery();
-                eventId = rs.next() ? rs.getInt(1) : -1;
-            }
+        if (date.isEmpty()) {
+            showAlert("Error", "Please select a date");
+            return;
+        }
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try {
+            conn = DatabaseConnection.getInstance().getConnection();
+            String insertSql = "INSERT INTO events (title, description, date, location, totalSeats) VALUES (?, ?, ?, ?, ?)";
+            pstmt = conn.prepareStatement(insertSql);
+            pstmt.setString(1, title);
+            pstmt.setString(2, desc);
+            pstmt.setString(3, date);
+            pstmt.setString(4, location);
+            pstmt.setInt(5, totalSeats);
+            pstmt.executeUpdate();
+            pstmt.close();
+
+            String idSql = "SELECT last_insert_rowid()";
+            pstmt = conn.prepareStatement(idSql);
+            ResultSet rs = pstmt.executeQuery();
+            int eventId = rs.next() ? rs.getInt(1) : -1;
+            pstmt.close();
 
             if (eventId != -1) {
-                generateSeatsForEvent(conn, eventId, Integer.parseInt(textTotalSeats.getText().trim()));
-                lblEventStatus.setText("Event added successfully");
+                generateSeatsForEvent(conn, eventId, totalSeats);
+                if (lblEventStatus != null) lblEventStatus.setText("Event added successfully");
                 clearFormFields();
                 loadEventsInBackground();
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            lblEventStatus.setText("Error saving event");
+            if (lblEventStatus != null) lblEventStatus.setText("Error saving event: " + e.getMessage());
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -237,38 +344,71 @@ public class AdminController {
             return;
         }
 
-        try (Connection conn = DatabaseConnection.getInstance().getConnection()) {
+        String title = textTitle.getText().trim();
+        String desc = textDescription.getText().trim();
+        String date = textDate.getValue() != null ? textDate.getValue().toString() : "";
+        String location = textLocation.getText().trim();
+        int requestedTotalSeats = Integer.parseInt(textTotalSeats.getText().trim());
+
+        if (date.isEmpty()) {
+            showAlert("Error", "Please select a date");
+            return;
+        }
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try {
+            conn = DatabaseConnection.getInstance().getConnection();
             int eventId = selectedEvent.getEventId();
+
+            int reservedSeats = 0;
+            String countSql = "SELECT COUNT(*) FROM seats WHERE eventId = ? AND status = 'reserved'";
+            pstmt = conn.prepareStatement(countSql);
+            pstmt.setInt(1, eventId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                reservedSeats = rs.getInt(1);
+            }
+            rs.close();
+            pstmt.close();
+
+            if (requestedTotalSeats < reservedSeats) {
+                showAlert("Cannot shrink seating", "There are " + reservedSeats + " reserved seats. Cannot reduce total seats below that.");
+                return;
+            }
+
             int currentTotalSeats = fetchEventTotalSeats(eventId);
-            int requestedTotalSeats = Integer.parseInt(textTotalSeats.getText().trim());
-
-            if (requestedTotalSeats < 1) {
-                showAlert("Invalid seats", "Total seats must be at least 1.");
-                return;
-            }
-
-            if (requestedTotalSeats < countReservedSeats(eventId)) {
-                showAlert("Cannot shrink seating", "There are more reserved seats than the requested total.");
-                return;
-            }
 
             String updateSql = "UPDATE events SET title = ?, description = ?, date = ?, location = ?, totalSeats = ? WHERE eventId = ?";
-            try (PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
-                pstmt.setString(1, textTitle.getText().trim());
-                pstmt.setString(2, textDescription.getText().trim());
-                pstmt.setString(3, textDate.getText().trim());
-                pstmt.setString(4, textLocation.getText().trim());
-                pstmt.setInt(5, requestedTotalSeats);
-                pstmt.setInt(6, eventId);
-                pstmt.executeUpdate();
+            pstmt = conn.prepareStatement(updateSql);
+            pstmt.setString(1, title);
+            pstmt.setString(2, desc);
+            pstmt.setString(3, date);
+            pstmt.setString(4, location);
+            pstmt.setInt(5, requestedTotalSeats);
+            pstmt.setInt(6, eventId);
+            pstmt.executeUpdate();
+            pstmt.close();
+
+            if (requestedTotalSeats > currentTotalSeats) {
+                addSeatsForEvent(conn, eventId, requestedTotalSeats, currentTotalSeats + 1);
+            } else if (requestedTotalSeats < currentTotalSeats) {
+                removeAvailableSeats(conn, eventId, currentTotalSeats - requestedTotalSeats);
             }
 
-            adjustSeatInventory(conn, eventId, currentTotalSeats, requestedTotalSeats);
-            lblEventStatus.setText("Event updated successfully");
+            if (lblEventStatus != null) lblEventStatus.setText("Event updated successfully");
+            clearFormFields();
             loadEventsInBackground();
+
         } catch (SQLException e) {
             e.printStackTrace();
-            lblEventStatus.setText("Error updating event");
+            if (lblEventStatus != null) lblEventStatus.setText("Error updating event: " + e.getMessage());
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -287,16 +427,29 @@ public class AdminController {
             return;
         }
 
-        try (Connection conn = DatabaseConnection.getInstance().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement("DELETE FROM events WHERE eventId = ?")) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try {
+            conn = DatabaseConnection.getInstance().getConnection();
+            String sql = "DELETE FROM events WHERE eventId = ?";
+            pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, selectedEvent.getEventId());
             pstmt.executeUpdate();
-            lblEventStatus.setText("Event deleted and related data removed");
+            pstmt.close();
+
+            if (lblEventStatus != null) lblEventStatus.setText("Event deleted successfully");
             clearFormFields();
             loadEventsInBackground();
+
         } catch (SQLException e) {
             e.printStackTrace();
-            lblEventStatus.setText("Error deleting event");
+            if (lblEventStatus != null) lblEventStatus.setText("Error deleting event: " + e.getMessage());
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -306,24 +459,16 @@ public class AdminController {
         tblEvents.getSelectionModel().clearSelection();
     }
 
-    @FXML
-    public void handleShowAllBookings() {
-        tabPane.getSelectionModel().select(tabBookings);
-        loadAllBookings();
-    }
-
-    @FXML
-    public void handleRefreshBookings() {
-        loadAllBookings();
-    }
-
     private boolean validateEventForm() {
         if (textTitle.getText().trim().isEmpty()
                 || textDescription.getText().trim().isEmpty()
-                || textDate.getText().trim().isEmpty()
                 || textLocation.getText().trim().isEmpty()
                 || textTotalSeats.getText().trim().isEmpty()) {
             showAlert("Validation Error", "All event fields must be filled.");
+            return false;
+        }
+        if (textDate.getValue() == null) {
+            showAlert("Validation Error", "Please select a date.");
             return false;
         }
         try {
@@ -338,96 +483,40 @@ public class AdminController {
         return true;
     }
 
-    private int countReservedSeats(int eventId) {
-        try (Connection conn = DatabaseConnection.getInstance().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement("SELECT COUNT(*) FROM seats WHERE eventId = ? AND status = 'reserved'")) {
-            pstmt.setInt(1, eventId);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                return rs.next() ? rs.getInt(1) : 0;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    private void adjustSeatInventory(Connection conn, int eventId, int currentTotalSeats, int requestedTotalSeats) throws SQLException {
-        if (requestedTotalSeats > currentTotalSeats) {
-            generateSeatsForEvent(conn, eventId, requestedTotalSeats, currentTotalSeats + 1);
-        } else if (requestedTotalSeats < currentTotalSeats) {
-            int difference = currentTotalSeats - requestedTotalSeats;
-            try (PreparedStatement pstmt = conn.prepareStatement(
-                    "DELETE FROM seats WHERE seatId IN (SELECT seatId FROM seats WHERE eventId = ? AND status = 'available' ORDER BY seatId DESC LIMIT ?)")) {
-                pstmt.setInt(1, eventId);
-                pstmt.setInt(2, difference);
-                pstmt.executeUpdate();
-            }
-        }
-    }
-
-    private void generateSeatsForEvent(Connection conn, int eventId, int totalSeats) throws SQLException {
-        generateSeatsForEvent(conn, eventId, totalSeats, 1);
-    }
-
-    private void generateSeatsForEvent(Connection conn, int eventId, int totalSeats, int startNumber) throws SQLException {
-        int seatsPerRow = 10;
-        int seatCounter = startNumber;
-        int row = (startNumber - 1) / seatsPerRow;
-        while (seatCounter <= totalSeats) {
-            char rowChar = (char) ('A' + row);
-            int seatNumber = ((seatCounter - 1) % seatsPerRow) + 1;
-            String seatLabel = rowChar + String.valueOf(seatNumber);
-            try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO seats (eventId, seatNumber, status) VALUES (?, ?, 'available')")) {
-                pstmt.setInt(1, eventId);
-                pstmt.setString(2, seatLabel);
-                pstmt.executeUpdate();
-            }
-            seatCounter++;
-            if (seatNumber == seatsPerRow) {
-                row++;
-            }
-        }
-    }
-
     private void clearFormFields() {
         textTitle.clear();
         textDescription.clear();
-        textDate.clear();
+        textDate.setValue(null);
         textLocation.clear();
         textTotalSeats.clear();
-        lblEventStatus.setText("Ready");
+        if (lblEventStatus != null) lblEventStatus.setText("Ready");
         selectedEvent = null;
     }
 
-    private void loadAllBookings() {
-        bookingList.clear();
-        lblBookingStatus.setText("Loading bookings...");
-        String sql = """
-                SELECT u.name AS customerName, e.title AS eventTitle, t.seatNumber, b.bookingDate,
-                       COALESCE(b.paymentStatus, 'Paid') AS paymentStatus
-                FROM bookings b
-                JOIN users u ON b.userId = u.userId
-                JOIN events e ON b.eventId = e.eventId
-                JOIN tickets t ON b.bookingId = t.bookingId
-                ORDER BY b.bookingDate DESC, u.name, e.title
-                """;
-        try (Connection conn = DatabaseConnection.getInstance().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
-            while (rs.next()) {
-                bookingList.add(new AdminBooking(
-                        rs.getString("customerName"),
-                        rs.getString("eventTitle"),
-                        rs.getString("seatNumber"),
-                        rs.getString("bookingDate"),
-                        rs.getString("paymentStatus")
-                ));
-            }
-            lblBookingStatus.setText("Loaded " + bookingList.size() + " bookings");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            lblBookingStatus.setText("Error loading bookings");
+    private void generateSeatsForEvent(Connection conn, int eventId, int totalSeats) throws SQLException {
+        addSeatsForEvent(conn, eventId, totalSeats, 1);
+    }
+
+    private void addSeatsForEvent(Connection conn, int eventId, int totalSeats, int startNumber) throws SQLException {
+        String sql = "INSERT INTO seats (eventId, seatNumber, status) VALUES (?, ?, 'available')";
+        PreparedStatement pstmt = null;
+        for (int i = startNumber; i <= totalSeats; i++) {
+            String seatNumber = "A" + i;
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, eventId);
+            pstmt.setString(2, seatNumber);
+            pstmt.executeUpdate();
+            pstmt.close();
         }
+    }
+
+    private void removeAvailableSeats(Connection conn, int eventId, int count) throws SQLException {
+        String sql = "DELETE FROM seats WHERE seatId IN (SELECT seatId FROM seats WHERE eventId = ? AND status = 'available' ORDER BY seatId DESC LIMIT ?)";
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setInt(1, eventId);
+        pstmt.setInt(2, count);
+        pstmt.executeUpdate();
+        pstmt.close();
     }
 
     private void showAlert(String title, String message) {

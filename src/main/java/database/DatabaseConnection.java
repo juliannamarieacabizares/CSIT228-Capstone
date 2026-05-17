@@ -15,8 +15,7 @@ public class DatabaseConnection {
         try {
             connect();
             createTables();
-            upgradeSchema();
-            insertSampleData();
+            // insertSampleData();  // ← COMMENTED OUT - only uncomment to reset sample data
         } catch (SQLException e) {
             e.printStackTrace();
         }

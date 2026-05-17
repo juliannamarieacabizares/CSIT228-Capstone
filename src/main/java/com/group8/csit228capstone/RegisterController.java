@@ -97,13 +97,17 @@ public class RegisterController {
     }
 
     @FXML
-    public void handleBack(ActionEvent event) {
+    private void handleBack(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("login-view.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
             stage.setTitle("Event Ticketing System - Login");
-            stage.show();
+            stage.setWidth(480);
+            stage.setHeight(600);
+            stage.setMinWidth(420);
+            stage.setMinHeight(500);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -22,17 +22,27 @@
             </font>
         </Label>
 
-        <ScrollPane fitToWidth="true" style="-fx-background: #BDE8F5; -fx-background-color: #BDE8F5;">
-            <GridPane fx:id="seatGrid" alignment="CENTER" hgap="10" vgap="10">
-            </GridPane>
-        </ScrollPane>
+        <!-- StackPane to hold both spinner and scroll pane (layered) -->
+        <StackPane prefHeight="400">
+            <!-- Loading Spinner (on top while loading) -->
+            <StackPane fx:id="loadingPane" visible="false" prefHeight="400">
+                <ProgressIndicator />
+            </StackPane>
 
+            <ScrollPane fx:id="scrollPane" fitToWidth="true" prefHeight="400" visible="false" managed="false" style="-fx-background: #BDE8F5; -fx-background-color: #BDE8F5;">
+                <GridPane fx:id="seatGrid" alignment="CENTER" hgap="0" vgap="2">
+                </GridPane>
+            </ScrollPane>
+        </StackPane>
+
+        <!-- Selected seats counter -->
         <Label fx:id="textTotal" text="Selected: 0 seat(s)" textFill="#0f2854">
             <font>
                 <Font name="System Bold" size="14.0" />
             </font>
         </Label>
 
+        <!-- Legend -->
         <HBox alignment="CENTER" spacing="30.0">
             <children>
                 <HBox alignment="CENTER" spacing="10.0">
@@ -68,6 +78,7 @@
             </children>
         </HBox>
 
+        <!-- Buttons -->
         <HBox alignment="CENTER" spacing="20.0">
             <children>
                 <Button fx:id="btnConfirm" onAction="#handleConfirm" prefWidth="120.0" prefHeight="35.0" style="-fx-background-color: #1C4D8D;" text="CONFIRM" textFill="WHITE">

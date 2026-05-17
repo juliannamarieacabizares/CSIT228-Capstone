@@ -3,7 +3,10 @@ package com.group8.csit228capstone;
 import database.DatabaseConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
@@ -34,9 +37,18 @@ public class BookingHistoryController {
     @FXML
     private Label lblStatus;
 
+    @FXML
+    private TextField txtSearch;
+
+    @FXML
+    private Button btnBackToDashboard;
+
     private int currentUserId;
+    private String currentUserName;
+    private String currentUserRole;
     private MainController mainController;
     private ObservableList<Booking> bookingList = FXCollections.observableArrayList();
+    private FilteredList<Booking> filteredList;
 
     @FXML
     public void initialize() {
@@ -45,11 +57,14 @@ public class BookingHistoryController {
         colEventDate.setCellValueFactory(cellData -> cellData.getValue().eventDateProperty());
         colSeatNumber.setCellValueFactory(cellData -> cellData.getValue().seatNumberProperty());
         colBookingDate.setCellValueFactory(cellData -> cellData.getValue().bookingDateProperty());
+
+        txtSearch.textProperty().addListener((obs, old, newVal) -> filterBookings(newVal));
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(int userId, String userName, String role) {
         this.currentUserId = userId;
-        System.out.println("Loading tickets for userId: " + userId);
+        this.currentUserName = userName;
+        this.currentUserRole = role;
         loadBookings();
     }
 
@@ -86,12 +101,29 @@ public class BookingHistoryController {
                 bookingList.add(booking);
             }
 
-            tblBookings.setItems(bookingList);
+            filteredList = new FilteredList<>(bookingList, p -> true);
+            tblBookings.setItems(filteredList);
             lblStatus.setText("Found " + bookingList.size() + " ticket(s)");
 
         } catch (Exception e) {
             e.printStackTrace();
             lblStatus.setText("Error loading bookings");
+        }
+    }
+
+    private void filterBookings(String keyword) {
+        if (filteredList == null) return;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            filteredList.setPredicate(p -> true);
+            lblStatus.setText("Showing " + filteredList.size() + " of " + bookingList.size() + " ticket(s)");
+        } else {
+            String lowerKeyword = keyword.toLowerCase().trim();
+            filteredList.setPredicate(booking ->
+                    booking.getEventTitle().toLowerCase().contains(lowerKeyword) ||
+                            booking.getSeatNumber().toLowerCase().contains(lowerKeyword)
+            );
+            lblStatus.setText("Found " + filteredList.size() + " matching ticket(s)");
         }
     }
 
@@ -121,7 +153,6 @@ public class BookingHistoryController {
         try {
             Connection conn = DatabaseConnection.getInstance().getConnection();
 
-            // Get ticket ID for this specific seat
             String getTicketSql = "SELECT t.ticketId, t.seatNumber, b.eventId FROM tickets t JOIN bookings b ON t.bookingId = b.bookingId WHERE t.bookingId = ? AND t.seatNumber = ?";
             PreparedStatement getStmt = conn.prepareStatement(getTicketSql);
             getStmt.setInt(1, booking.getBookingId());
@@ -137,13 +168,11 @@ public class BookingHistoryController {
                 eventId = rs.getInt("eventId");
             }
 
-            // Delete only this ticket
             String deleteTicketSql = "DELETE FROM tickets WHERE ticketId = ?";
             PreparedStatement ticketStmt = conn.prepareStatement(deleteTicketSql);
             ticketStmt.setInt(1, ticketId);
             ticketStmt.executeUpdate();
 
-            // Check if there are any remaining tickets for this booking
             String checkTicketsSql = "SELECT COUNT(*) FROM tickets WHERE bookingId = ?";
             PreparedStatement checkStmt = conn.prepareStatement(checkTicketsSql);
             checkStmt.setInt(1, booking.getBookingId());
@@ -154,7 +183,6 @@ public class BookingHistoryController {
                 remainingTickets = checkRs.getInt(1);
             }
 
-            // If no tickets left, delete the booking
             if (remainingTickets == 0) {
                 String deleteBookingSql = "DELETE FROM bookings WHERE bookingId = ?";
                 PreparedStatement bookingStmt = conn.prepareStatement(deleteBookingSql);
@@ -163,7 +191,6 @@ public class BookingHistoryController {
                 System.out.println("Booking #" + booking.getBookingId() + " deleted (no tickets left)");
             }
 
-            // Update seat status back to available
             if (seatNumber != null && eventId != -1) {
                 String updateSql = "UPDATE seats SET status = 'available' WHERE eventId = ? AND seatNumber = ?";
                 PreparedStatement updateStmt = conn.prepareStatement(updateSql);
@@ -172,7 +199,6 @@ public class BookingHistoryController {
                 updateStmt.executeUpdate();
             }
 
-            // Refresh the dashboard
             if (mainController != null) {
                 mainController.loadEvents();
             }
@@ -183,6 +209,27 @@ public class BookingHistoryController {
         } catch (Exception e) {
             e.printStackTrace();
             showAlert("Error", "Failed to cancel ticket: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleBackToDashboard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("main-view.fxml"));
+            Scene scene = new Scene(loader.load());
+
+            MainController mainController = loader.getController();
+            mainController.setUserInfo(currentUserName, currentUserId, currentUserRole);
+            if ("admin".equals(currentUserRole)) {
+                mainController.enableAdminMode();
+            }
+
+            Stage stage = (Stage) btnBackToDashboard.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("Event Dashboard");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to return to dashboard");
         }
     }
 

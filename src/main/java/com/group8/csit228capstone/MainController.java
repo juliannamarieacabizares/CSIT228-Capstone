@@ -10,12 +10,31 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-
+import javafx.concurrent.Task;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import javafx.concurrent.Task;
+import java.time.LocalDate;
+
 
 public class MainController {
+
+
+    @FXML
+    private Label lblWelcome;
+
+    @FXML
+    private Label lblTotalEvents;
+
+    @FXML
+    private Label lblAvailableTickets;
+
+    @FXML
+    private Label lblUpcomingEvents;
+
+    @FXML
+    private ProgressIndicator eventLoadingSpinner;
 
     @FXML
     private TableView<Event> eventTable;
@@ -34,6 +53,9 @@ public class MainController {
 
     @FXML
     private TableColumn<Event, Integer> colAvailableSeats;
+
+    @FXML
+    private TableColumn<Event, Void> colAction;
 
     @FXML
     private Button btnEvents;
@@ -56,57 +78,162 @@ public class MainController {
     private String currentUserName;
     private int currentUserId;
     private String currentUserRole;
+    private Button activeButton;
 
     private ObservableList<Event> eventList = FXCollections.observableArrayList();
 
-    @FXML
     public void initialize() {
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         colLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
         colAvailableSeats.setCellValueFactory(new PropertyValueFactory<>("availableSeats"));
 
+        // Add Book Now button to each row
+        colAction.setCellFactory(col -> new TableCell<Event, Void>() {
+            private final Button bookBtn = new Button("🎫 Book Now");
+            {
+                bookBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;");
+                bookBtn.setOnAction(click -> {
+                    Event selectedEvent = getTableView().getItems().get(getIndex());
+                    handleBookTicketDirect(selectedEvent);
+                });
+            }
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(bookBtn);
+                }
+            }
+        });
+
+        if (eventLoadingSpinner != null) {
+            eventLoadingSpinner.setVisible(false);
+        }
+
         loadEvents();
+        setActiveMenu(btnEvents);
+    }
+    private void setActiveMenu(Button button) {
+        if (activeButton != null) {
+            activeButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #b0b0cc; -fx-background-radius: 8;");
+        }
+        activeButton = button;
+        if (activeButton != null) {
+            activeButton.setStyle("-fx-background-color: #2d2d44; -fx-text-fill: white; -fx-background-radius: 8;");
+        }
     }
 
-    // Made PUBLIC so BookingHistoryController can call it
     public void loadEvents() {
-        try {
-            Connection conn = DatabaseConnection.getInstance().getConnection();
-            String sql = """
+        // Show loading spinner
+        if (eventLoadingSpinner != null) {
+            eventLoadingSpinner.setVisible(true);
+        }
+        lblStatus.setText("Loading events...");
+
+        Task<ObservableList<Event>> loadTask = new Task<>() {
+            @Override
+            protected ObservableList<Event> call() throws Exception {
+                ObservableList<Event> events = FXCollections.observableArrayList();
+                int totalAvailable = 0;
+                int upcomingCount = 0;
+                String today = LocalDate.now().toString();
+
+                Connection conn = DatabaseConnection.getInstance().getConnection();
+                String sql = """
                 SELECT e.eventId, e.title, e.description, e.date, e.location, e.totalSeats,
                        (e.totalSeats - (SELECT COUNT(*) FROM seats s WHERE s.eventId = e.eventId AND s.status = 'reserved')) as availableSeats
                 FROM events e
                 ORDER BY e.date
                 """;
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            ResultSet rs = pstmt.executeQuery();
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                ResultSet rs = pstmt.executeQuery();
 
-            eventList.clear();
+                while (rs.next()) {
+                    int available = rs.getInt("availableSeats");
+                    totalAvailable += available;
 
-            while (rs.next()) {
-                Event event = new Event(
-                        rs.getInt("eventId"),
-                        rs.getString("title"),
-                        rs.getString("description"),
-                        rs.getString("date"),
-                        rs.getString("location"),
-                        rs.getInt("availableSeats")
-                );
-                eventList.add(event);
+                    String eventDate = rs.getString("date");
+                    if (eventDate.compareTo(today) >= 0) {
+                        upcomingCount++;
+                    }
+
+                    Event event = new Event(
+                            rs.getInt("eventId"),
+                            rs.getString("title"),
+                            rs.getString("description"),
+                            rs.getString("date"),
+                            rs.getString("location"),
+                            available
+                    );
+                    events.add(event);
+                }
+
+                final int finalTotalAvailable = totalAvailable;
+                final int finalUpcomingCount = upcomingCount;
+
+                javafx.application.Platform.runLater(() -> {
+                    if (lblTotalEvents != null) lblTotalEvents.setText(String.valueOf(events.size()));
+                    if (lblAvailableTickets != null) lblAvailableTickets.setText(String.valueOf(finalTotalAvailable));
+                    if (lblUpcomingEvents != null) lblUpcomingEvents.setText(String.valueOf(finalUpcomingCount));
+                });
+
+                // Simulate network delay (remove in production)
+                Thread.sleep(300);
+
+                return events;
             }
+        };
 
+        loadTask.setOnSucceeded(result -> {
+            eventList.setAll(loadTask.getValue());
             eventTable.setItems(eventList);
             lblStatus.setText("Loaded " + eventList.size() + " events");
+            if (eventLoadingSpinner != null) {
+                eventLoadingSpinner.setVisible(false);
+            }
+        });
+
+        loadTask.setOnFailed(result -> {
+            lblStatus.setText("Error loading events");
+            if (eventLoadingSpinner != null) {
+                eventLoadingSpinner.setVisible(false);
+            }
+        });
+
+        new Thread(loadTask).start();
+    }
+
+    // Direct booking from table button
+    private void handleBookTicketDirect(Event selectedEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("seat-view.fxml"));
+            Scene scene = new Scene(loader.load());
+
+            SeatSelectionController controller = loader.getController();
+            controller.setEvent(selectedEvent, currentUserId);
+
+            Stage stage = new Stage();
+            stage.setTitle("Select Seats - " + selectedEvent.getTitle());
+            stage.setScene(scene);
+            stage.setWidth(800);
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            loadEvents();
 
         } catch (Exception e) {
             e.printStackTrace();
-            lblStatus.setText("Error loading events");
+            lblStatus.setText("Error opening seat selection");
         }
     }
 
     @FXML
     private void handleBookTicket() {
+        setActiveMenu(btnBook);
+
         Event selectedEvent = eventTable.getSelectionModel().getSelectedItem();
 
         if (selectedEvent == null) {
@@ -124,6 +251,7 @@ public class MainController {
             Stage stage = new Stage();
             stage.setTitle("Select Seats - " + selectedEvent.getTitle());
             stage.setScene(scene);
+            stage.setWidth(800);
             stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
             stage.showAndWait();
 
@@ -137,6 +265,7 @@ public class MainController {
 
     @FXML
     private void handleEventsNavigation() {
+        setActiveMenu(btnEvents);
         loadEvents();
     }
 
@@ -147,32 +276,36 @@ public class MainController {
             Scene scene = new Scene(loader.load());
 
             BookingHistoryController controller = loader.getController();
-            controller.setUserId(currentUserId);
-            controller.setMainController(this);  // Pass reference for auto-refresh
+            controller.setUserId(currentUserId, currentUserName, currentUserRole);
+            controller.setMainController(this);
 
-            Stage stage = new Stage();
-            stage.setTitle("My Booking History");
+            Stage stage = (Stage) btnView.getScene().getWindow();
             stage.setScene(scene);
-            stage.show();
+            stage.setTitle("My Bookings");
 
         } catch (Exception e) {
             e.printStackTrace();
-            lblStatus.setText("Error opening booking history");
+            lblStatus.setText("Error opening bookings");
         }
     }
 
     @FXML
     private void handleManageEvents() {
+        setActiveMenu(btnManageEvents);
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("admin-view.fxml"));
             Scene scene = new Scene(loader.load());
-            Stage stage = new Stage();
-            stage.setTitle("Admin Event Management");
+
+            AdminController adminController = loader.getController();
+            adminController.setUserInfo(currentUserName, currentUserId, currentUserRole);
+
+            Stage stage = (Stage) btnManageEvents.getScene().getWindow();
             stage.setScene(scene);
-            stage.show();
+            stage.setTitle("Admin Panel - Event Management");
         } catch (Exception e) {
             e.printStackTrace();
-            lblStatus.setText("Error opening admin management");
+            lblStatus.setText("Error opening admin panel");
         }
     }
 
@@ -193,7 +326,12 @@ public class MainController {
         this.currentUserName = userName;
         this.currentUserId = userId;
         this.currentUserRole = role;
-        lblStatus.setText("Welcome, " + userName + "!");
+        if (lblStatus != null) {
+            lblStatus.setText("Welcome back, " + userName + "! 👋");
+        }
+        if (lblWelcome != null) {
+            lblWelcome.setText("👤 " + userName);
+        }
         System.out.println("User logged in: " + userName + " (Role: " + role + ")");
     }
 

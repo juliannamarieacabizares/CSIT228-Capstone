@@ -5,45 +5,67 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" prefHeight="400" prefWidth="600" spacing="15" style="-fx-background-color: #BDE8F5;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group8.csit228capstone.RegisterController">
-    <padding>
-        <Insets bottom="40" left="40" right="40" top="40" />
-    </padding>
+<BorderPane style="-fx-background-color: linear-gradient(to bottom right, #1a1a2e, #16213e);" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group8.csit228capstone.RegisterController">
 
-    <Label text="CREATE AN ACCOUNT" textFill="#0f2854">
-      <font>
-         <Font name="System Bold" size="24.0" />
-      </font></Label>
-   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
-      <children>
-         <Label prefWidth="150.0" text="Enter Username:" textFill="#0f2854">
-            <font>
-               <Font name="System Bold" size="14.0" />
-            </font></Label>
-          <TextField fx:id="txtUsername" prefWidth="250.0" />
-      </children></HBox>
-   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
-      <children>
-         <Label prefWidth="150.0" text="Enter Email:" textFill="#0f2854">
-            <font>
-               <Font name="System Bold" size="14.0" />
-            </font></Label>
-          <TextField fx:id="txtEmail" prefWidth="250.0" />
-      </children>
-   </HBox>
-   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
-      <children>
-         <Label prefWidth="150.0" text="Enter Password:" textFill="#0f2854">
-            <font>
-               <Font name="System Bold" size="14.0" />
-            </font></Label>
-          <PasswordField fx:id="txtPassword" prefWidth="250.0" />
-      </children>
-   </HBox>
-    <Button fx:id="btnRegister" onAction="#handleRegister" style="-fx-background-color: #1C4D8D; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 200;" text="Register" />
-    <Button fx:id="btnBack" onAction="#handleBack" prefWidth="200.0" style="-fx-background-color: #1C4D8D; -fx-text-fill: white;" text="Back to Login">
-      <font>
-         <Font size="14.0" />
-      </font></Button>
+    <center>
+        <VBox alignment="CENTER" spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 15;">
+            <padding>
+                <Insets top="30.0" right="35.0" bottom="30.0" left="35.0" />
+            </padding>
+            <children>
+                <!-- Header -->
+                <VBox alignment="CENTER" spacing="5">
+                    <Label text="📝" style="-fx-font-size: 40px;" />
+                    <Label text="Create Account" textFill="#1a1a2e" wrapText="true" alignment="CENTER">
+                        <font>
+                            <Font name="System Bold" size="22" />
+                        </font>
+                    </Label>
+                    <Label text="Join us and start booking events" textFill="#888888">
+                        <font>
+                            <Font size="13" />
+                        </font>
+                    </Label>
+                </VBox>
 
-</VBox>
+                <Separator />
+
+                <!-- Form Fields -->
+                <VBox spacing="12">
+                    <children>
+                        <Label text="Full Name" textFill="#333333">
+                            <font><Font size="13" /></font>
+                        </Label>
+                        <TextField fx:id="txtUsername" promptText="Enter your full name" style="-fx-background-radius: 8; -fx-padding: 10;" />
+
+                        <Label text="Email Address" textFill="#333333">
+                            <font><Font size="13" /></font>
+                        </Label>
+                        <TextField fx:id="txtEmail" promptText="Enter your email" style="-fx-background-radius: 8; -fx-padding: 10;" />
+
+                        <Label text="Password" textFill="#333333">
+                            <font><Font size="13" /></font>
+                        </Label>
+                        <PasswordField fx:id="txtPassword" promptText="Create a password (min 4 characters)" style="-fx-background-radius: 8; -fx-padding: 10;" />
+
+                        <Label text="Confirm Password" textFill="#333333">
+                            <font><Font size="13" /></font>
+                        </Label>
+                        <PasswordField fx:id="txtConfirmPassword" promptText="Confirm your password" style="-fx-background-radius: 8; -fx-padding: 10;" />
+
+                        <Label fx:id="lblMessage" text="" style="-fx-font-size: 12px;" wrapText="true" />
+
+                        <Button fx:id="btnRegister" onAction="#handleRegister" style="-fx-background-color: #1a1a2e; -fx-background-radius: 8; -fx-padding: 10;" text="Create Account" textFill="WHITE">
+                            <font><Font size="14" /></font>
+                        </Button>
+
+                        <HBox alignment="CENTER" spacing="5">
+                            <Label text="Already have an account?" textFill="#666666" />
+                            <Button fx:id="btnBack" onAction="#handleBack" style="-fx-background-color: transparent; -fx-text-fill: #2196F3; -fx-cursor: hand;" text="Back to Login" />
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>
