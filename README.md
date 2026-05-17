@@ -62,27 +62,28 @@ Planned use of classes such as:
 CSIT228-Capstone/
 ├── src/
 │   └── main/
-│       ├── java/com/group8/csit228capstone/
-│       │   ├── MainApplication.java
-│       │   ├── LoginController.java
-│       │   ├── RegisterController.java
-│       │   ├── MainController.java
-│       │   ├── SeatSelectionController.java
-│       │   ├── BookingHistoryController.java
-│       │   ├── AdminController.java
-│       │   ├── User.java
-│       │   ├── Event.java
-│       │   ├── Booking.java
-│       │   ├── AdminBooking.java
-│       │   └── database/DatabaseConnection.java
+│       ├── java/
+│       │   ├── com/group8/csit228capstone/
+│       │   │   ├── MainApplication.java
+│       │   │   ├── LoginController.java
+│       │   │   ├── RegisterController.java
+│       │   │   ├── MainController.java
+│       │   │   ├── SeatSelectionController.java
+│       │   │   ├── BookingHistoryController.java
+│       │   │   ├── AdminController.java
+│       │   │   ├── User.java
+│       │   │   ├── Event.java
+│       │   │   ├── Booking.java
+│       │   │   └── AdminBooking.java
+│       │   └── database/
+│       │       └── DatabaseConnection.java
 │       └── resources/com/group8/csit228capstone/
 │           ├── login-view.fxml
 │           ├── register-view.fxml
 │           ├── main-view.fxml
 │           ├── seat-view.fxml
 │           ├── BookingHistoryView.fxml
-│           ├── admin-view.fxml
-│           └── LoadingView.fxml
+│           └── admin-view.fxml
 ├── diagrams/
 │   ├── use-case-diagram.png
 │   └── class-diagram.png
