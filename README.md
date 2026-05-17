@@ -61,22 +61,31 @@ Planned use of classes such as:
 ## Project Structure
 CSIT228-Capstone/
 ├── src/
-│ └── main/
-│ ├── java/com/group8/csit228capstone/
-| | ├── AdminController.java
-│ │ ├── LoginController.java
-│ │ ├── MainApplication.java
-│ │ ├── MainController.java
-│ │ ├── RegisterController.java
-│ │ └── SeatSelectionController.java
-│ └── resources/com/group8/csit228capstone/
-│ ├── LoginView.fxml
-│ ├── MainView.fxml
-│ ├── AdminView.fxml
-│ ├── RegisterView.fxml
-│ └── SeatSelectionView.fxml
+│   └── main/
+│       ├── java/com/group8/csit228capstone/
+│       │   ├── MainApplication.java
+│       │   ├── LoginController.java
+│       │   ├── RegisterController.java
+│       │   ├── MainController.java
+│       │   ├── SeatSelectionController.java
+│       │   ├── BookingHistoryController.java
+│       │   ├── AdminController.java
+│       │   ├── User.java
+│       │   ├── Event.java
+│       │   ├── Booking.java
+│       │   ├── AdminBooking.java
+│       │   └── database/DatabaseConnection.java
+│       └── resources/com/group8/csit228capstone/
+│           ├── login-view.fxml
+│           ├── register-view.fxml
+│           ├── main-view.fxml
+│           ├── seat-view.fxml
+│           ├── BookingHistoryView.fxml
+│           ├── admin-view.fxml
+│           └── LoadingView.fxml
 ├── diagrams/
-│ ├── use-case-diagram.png
-│ └── class-diagram.png
+│   ├── use-case-diagram.png
+│   └── class-diagram.png
+├── eventticketing.db
 ├── README.md
 └── .gitignore
