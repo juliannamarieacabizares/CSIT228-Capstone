@@ -99,8 +99,8 @@
                                                             <font><Font size="13" /></font>
                                                         </Button>
                                                         <Button fx:id="btnClear" onAction="#handleClear"
-                                                                style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-pref-width: 85; -fx-padding: 8;"
-                                                                text="Clear">
+                                                            style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-pref-width: 85; -fx-padding: 8;"
+                                                            text="Clear">
                                                             <font><Font size="13" /></font>
                                                         </Button>
                                                     </HBox>
@@ -115,7 +115,6 @@
                                             </padding>
 
                                             <children>
-                                                <!-- Header with Title and Refresh -->
                                                 <HBox alignment="CENTER_LEFT" spacing="10">
                                                     <Label text="📋 EVENT DIRECTORY" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
                                                     <Label text="All events in the system" style="-fx-text-fill: #64748b; -fx-font-size: 11px;" />
@@ -127,7 +126,7 @@
                                                     </Button>
                                                 </HBox>
 
-                                                <!-- SEARCH BAR SECTION -->
+                                                <!-- SEARCH BAR -->
                                                 <HBox spacing="10" alignment="CENTER_LEFT">
                                                     <Label text="🔍 Search:" style="-fx-text-fill: #334155; -fx-font-size: 12px; -fx-font-weight: bold;" />
                                                     <TextField fx:id="searchEventField" promptText="Search by ID, title, location, date..."
@@ -145,10 +144,10 @@
                                                     <Label fx:id="lblEventSearchInfo" style="-fx-text-fill: #3b82f6; -fx-font-size: 11px;" />
                                                 </HBox>
 
-                                                <!-- SORT OPTIONS -->
+                                                <!-- SORT OPTIONS - RadioButtons (ToggleGroup handled in Controller) -->
                                                 <HBox spacing="15" alignment="CENTER_LEFT">
                                                     <Label text="Sort by:" style="-fx-text-fill: #334155; -fx-font-size: 12px; -fx-font-weight: bold;" />
-                                                    <RadioButton text="ID" fx:id="sortEventById">
+                                                    <RadioButton text="ID" fx:id="sortEventById" selected="true">
                                                         <font><Font size="11" /></font>
                                                     </RadioButton>
                                                     <RadioButton text="Event Title" fx:id="sortEventByTitle">
@@ -167,7 +166,7 @@
                                                     </Button>
                                                 </HBox>
 
-                                                <!-- LOADING SPINNER FOR EVENTS -->
+                                                <!-- LOADING SPINNER -->
                                                 <HBox fx:id="eventLoadingSpinner" alignment="CENTER" spacing="10" visible="false"
                                                       style="-fx-padding: 30; -fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-radius: 8;">
                                                     <ProgressIndicator maxWidth="40" />
@@ -175,8 +174,7 @@
                                                 </HBox>
 
                                                 <!-- Events Table -->
-                                                <TableView fx:id="tblEvents" prefHeight="380" style="-fx-border-color: #e2e8f0; -fx-border-radius: 8;"
-                                                           visible="true" managed="true">
+                                                <TableView fx:id="tblEvents" prefHeight="380" style="-fx-border-color: #e2e8f0; -fx-border-radius: 8;">
                                                     <columns>
                                                         <TableColumn fx:id="colEventId" text="ID" prefWidth="50" />
                                                         <TableColumn fx:id="colTitle" text="Event Title" prefWidth="200" />
@@ -219,7 +217,7 @@
                                             </Button>
                                         </HBox>
 
-                                        <!-- SEARCH BAR FOR BOOKINGS -->
+                                        <!-- SEARCH BAR -->
                                         <HBox spacing="10" alignment="CENTER_LEFT">
                                             <Label text="🔍 Search Bookings:" style="-fx-text-fill: #334155; -fx-font-size: 12px; -fx-font-weight: bold;" />
                                             <TextField fx:id="searchBookingField" promptText="Search by ID, customer, event, seat..."
@@ -237,10 +235,10 @@
                                             <Label fx:id="lblBookingSearchInfo" style="-fx-text-fill: #3b82f6; -fx-font-size: 11px;" />
                                         </HBox>
 
-                                        <!-- SORT OPTIONS FOR BOOKINGS -->
+                                        <!-- SORT OPTIONS - RadioButtons -->
                                         <HBox spacing="15" alignment="CENTER_LEFT">
                                             <Label text="Sort by:" style="-fx-text-fill: #334155; -fx-font-size: 12px; -fx-font-weight: bold;" />
-                                            <RadioButton text="ID" fx:id="sortBookingById">
+                                            <RadioButton text="ID" fx:id="sortBookingById" selected="true">
                                                 <font><Font size="11" /></font>
                                             </RadioButton>
                                             <RadioButton text="Customer Name" fx:id="sortBookingByCustomer">
@@ -262,7 +260,7 @@
                                             </Button>
                                         </HBox>
 
-                                        <!-- LOADING SPINNER FOR BOOKINGS -->
+                                        <!-- LOADING SPINNER -->
                                         <HBox fx:id="bookingLoadingSpinner" alignment="CENTER" spacing="10" visible="false"
                                               style="-fx-padding: 30; -fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-radius: 8;">
                                             <ProgressIndicator maxWidth="40" />
@@ -270,8 +268,7 @@
                                         </HBox>
 
                                         <!-- Bookings Table -->
-                                        <TableView fx:id="tblAllBookings" prefHeight="380" style="-fx-border-color: #e2e8f0; -fx-border-radius: 8;"
-                                                   visible="true" managed="true">
+                                        <TableView fx:id="tblAllBookings" prefHeight="380" style="-fx-border-color: #e2e8f0; -fx-border-radius: 8;">
                                             <columns>
                                                 <TableColumn fx:id="colAllBookingId" text="ID" prefWidth="50" />
                                                 <TableColumn fx:id="colAllCustomerName" text="Customer" prefWidth="160" />
@@ -285,7 +282,6 @@
                                             </placeholder>
                                         </TableView>
 
-                                        <!-- Footer -->
                                         <HBox alignment="CENTER_RIGHT" spacing="8">
                                             <Label fx:id="lblBookingStatus" text="✓ Ready" style="-fx-text-fill: #22c55e; -fx-font-size: 11px;" />
                                         </HBox>

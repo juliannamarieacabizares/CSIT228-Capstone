@@ -88,28 +88,23 @@ public class AdminController {
     @FXML private Button btnSearchEvent;
     @FXML private Button btnClearEventSearch;
     @FXML private Label lblEventSearchInfo;
-
-    @FXML private RadioButton sortEventById;
-    @FXML private RadioButton sortEventByTitle;
-    @FXML private RadioButton sortEventByDate;
-    @FXML private RadioButton sortEventByLocation;
     @FXML private Button btnApplyEventSort;
-
     @FXML private TextField searchBookingField;
     @FXML private Button btnSearchBooking;
     @FXML private Button btnClearBookingSearch;
     @FXML private Label lblBookingSearchInfo;
-
+    @FXML private Button btnApplyBookingSort;
+    @FXML private HBox eventLoadingSpinner;
+    @FXML private HBox bookingLoadingSpinner;
+    @FXML private RadioButton sortEventById;
+    @FXML private RadioButton sortEventByTitle;
+    @FXML private RadioButton sortEventByDate;
+    @FXML private RadioButton sortEventByLocation;
     @FXML private RadioButton sortBookingById;
     @FXML private RadioButton sortBookingByCustomer;
     @FXML private RadioButton sortBookingByEvent;
     @FXML private RadioButton sortBookingBySeat;
     @FXML private RadioButton sortBookingByDate;
-    @FXML private Button btnApplyBookingSort;
-
-    // ========== LOADING SPINNERS ==========
-    @FXML private HBox eventLoadingSpinner;
-    @FXML private HBox bookingLoadingSpinner;
 
     // ========== DATA LISTS ==========
     private final ObservableList<Event> allEventsList = FXCollections.observableArrayList();
@@ -145,12 +140,26 @@ public class AdminController {
         colAllBookingDate.setCellValueFactory(new PropertyValueFactory<>("bookingDate"));
         colAllPaymentStatus.setCellValueFactory(new PropertyValueFactory<>("paymentStatus"));
 
+
+        ToggleGroup eventSortGroup = new ToggleGroup();
+        sortEventById.setToggleGroup(eventSortGroup);
+        sortEventByTitle.setToggleGroup(eventSortGroup);
+        sortEventByDate.setToggleGroup(eventSortGroup);
+        sortEventByLocation.setToggleGroup(eventSortGroup);
+
+        ToggleGroup bookingSortGroup = new ToggleGroup();
+        sortBookingById.setToggleGroup(bookingSortGroup);
+        sortBookingByCustomer.setToggleGroup(bookingSortGroup);
+        sortBookingByEvent.setToggleGroup(bookingSortGroup);
+        sortBookingBySeat.setToggleGroup(bookingSortGroup);
+        sortBookingByDate.setToggleGroup(bookingSortGroup);
         // Set up tables
         tblEvents.setItems(displayedEventsList);
         tblAllBookings.setItems(displayedBookingsList);
 
         // Load data
         loadEventsInBackground();
+        loadAllBookings();
 
         // Event table selection listener
         tblEvents.getSelectionModel().selectedItemProperty().addListener((obs, old, selected) -> {
@@ -158,10 +167,6 @@ public class AdminController {
                 populateForm(selected);
             }
         });
-
-        // Set default sort selection
-        sortEventById.setSelected(true);
-        sortBookingById.setSelected(true);
     }
 
     // ========== EVENT SEARCH METHODS ==========
@@ -199,8 +204,13 @@ public class AdminController {
         displayedEventsList.setAll(allEventsList);
         lblEventSearchInfo.setText("");
 
-        // Reset sort to default (by ID)
+        // Reset sort to default (ID only)
         sortEventById.setSelected(true);
+        sortEventByTitle.setSelected(false);
+        sortEventByDate.setSelected(false);
+        sortEventByLocation.setSelected(false);
+
+        // Apply single-column sort
         displayedEventsList.sort(Comparator.comparing(Event::getEventId));
 
         if (lblEventStatus != null) {
@@ -224,7 +234,49 @@ public class AdminController {
 
         if (comparator != null) {
             displayedEventsList.sort(comparator);
-            if (lblEventStatus != null) lblEventStatus.setText("Sorted: " + displayedEventsList.size() + " events");
+            if (lblEventStatus != null) lblEventStatus.setText("Sorted by: " + getSelectedSortOption());
+        }
+    }
+
+    private String getSelectedSortOption() {
+        if (sortEventById.isSelected()) return "ID";
+        if (sortEventByTitle.isSelected()) return "Title";
+        if (sortEventByDate.isSelected()) return "Date";
+        if (sortEventByLocation.isSelected()) return "Location";
+        return "ID";
+    }
+
+    private void applyEventSort() {
+        Comparator<Event> comparator = null;
+
+        // Build comparator based on selected checkboxes (in priority order)
+        if (sortEventById.isSelected()) {
+            comparator = Comparator.comparing(Event::getEventId);
+        }
+        if (sortEventByTitle.isSelected()) {
+            if (comparator == null) {
+                comparator = Comparator.comparing(Event::getTitle);
+            } else {
+                comparator = comparator.thenComparing(Event::getTitle);
+            }
+        }
+        if (sortEventByDate.isSelected()) {
+            if (comparator == null) {
+                comparator = Comparator.comparing(Event::getDate);
+            } else {
+                comparator = comparator.thenComparing(Event::getDate);
+            }
+        }
+        if (sortEventByLocation.isSelected()) {
+            if (comparator == null) {
+                comparator = Comparator.comparing(Event::getLocation);
+            } else {
+                comparator = comparator.thenComparing(Event::getLocation);
+            }
+        }
+
+        if (comparator != null) {
+            displayedEventsList.sort(comparator);
         }
     }
 
@@ -263,8 +315,14 @@ public class AdminController {
         displayedBookingsList.setAll(allBookingsList);
         lblBookingSearchInfo.setText("");
 
-        // Reset sort to default (by ID)
+
         sortBookingById.setSelected(true);
+        sortBookingByCustomer.setSelected(false);
+        sortBookingByEvent.setSelected(false);
+        sortBookingBySeat.setSelected(false);
+        sortBookingByDate.setSelected(false);
+
+
         displayedBookingsList.sort(Comparator.comparing(AdminBooking::getBookingId));
 
         if (lblBookingStatus != null) {
@@ -272,25 +330,51 @@ public class AdminController {
         }
     }
 
+
     @FXML
     private void handleApplyBookingSort() {
+        applyBookingSort();
+        if (lblBookingStatus != null) lblBookingStatus.setText("Sorted: " + displayedBookingsList.size() + " bookings");
+    }
+
+    private void applyBookingSort() {
         Comparator<AdminBooking> comparator = null;
+
 
         if (sortBookingById.isSelected()) {
             comparator = Comparator.comparing(AdminBooking::getBookingId);
-        } else if (sortBookingByCustomer.isSelected()) {
-            comparator = Comparator.comparing(AdminBooking::getCustomerName);
-        } else if (sortBookingByEvent.isSelected()) {
-            comparator = Comparator.comparing(AdminBooking::getEventTitle);
-        } else if (sortBookingBySeat.isSelected()) {
-            comparator = Comparator.comparing(AdminBooking::getSeatNumber);
-        } else if (sortBookingByDate.isSelected()) {
-            comparator = Comparator.comparing(AdminBooking::getBookingDate);
+        }
+        if (sortBookingByCustomer.isSelected()) {
+            if (comparator == null) {
+                comparator = Comparator.comparing(AdminBooking::getCustomerName);
+            } else {
+                comparator = comparator.thenComparing(AdminBooking::getCustomerName);
+            }
+        }
+        if (sortBookingByEvent.isSelected()) {
+            if (comparator == null) {
+                comparator = Comparator.comparing(AdminBooking::getEventTitle);
+            } else {
+                comparator = comparator.thenComparing(AdminBooking::getEventTitle);
+            }
+        }
+        if (sortBookingBySeat.isSelected()) {
+            if (comparator == null) {
+                comparator = Comparator.comparing(AdminBooking::getSeatNumber);
+            } else {
+                comparator = comparator.thenComparing(AdminBooking::getSeatNumber);
+            }
+        }
+        if (sortBookingByDate.isSelected()) {
+            if (comparator == null) {
+                comparator = Comparator.comparing(AdminBooking::getBookingDate);
+            } else {
+                comparator = comparator.thenComparing(AdminBooking::getBookingDate);
+            }
         }
 
         if (comparator != null) {
             displayedBookingsList.sort(comparator);
-            if (lblBookingStatus != null) lblBookingStatus.setText("Sorted: " + displayedBookingsList.size() + " bookings");
         }
     }
 
@@ -322,14 +406,14 @@ public class AdminController {
                 Thread.sleep(300);
 
                 String sql = """
-                SELECT b.bookingId, u.name AS customerName, e.title AS eventTitle, 
-                       t.seatNumber, b.bookingDate, COALESCE(b.paymentStatus, 'Confirmed') AS paymentStatus
-                FROM bookings b
-                JOIN users u ON b.userId = u.userId
-                JOIN events e ON b.eventId = e.eventId
-                JOIN tickets t ON b.bookingId = t.bookingId
-                ORDER BY b.bookingDate DESC
-                """;
+                    SELECT b.bookingId, u.name AS customerName, e.title AS eventTitle, 
+                           t.seatNumber, b.bookingDate, COALESCE(b.paymentStatus, 'Confirmed') AS paymentStatus
+                    FROM bookings b
+                    JOIN users u ON b.userId = u.userId
+                    JOIN events e ON b.eventId = e.eventId
+                    JOIN tickets t ON b.bookingId = t.bookingId
+                    ORDER BY b.bookingDate DESC
+                    """;
 
                 Connection conn = null;
                 PreparedStatement pstmt = null;
@@ -356,7 +440,6 @@ public class AdminController {
                 } finally {
                     try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
                     try { if (pstmt != null) pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-                    // DO NOT close connection
                 }
                 return null;
             }
@@ -406,6 +489,10 @@ public class AdminController {
             allEventsList.setAll(loadTask.getValue());
             displayedEventsList.setAll(allEventsList);
 
+
+            sortEventById.setSelected(true);
+            applyEventSort();
+
             if (eventLoadingSpinner != null) eventLoadingSpinner.setVisible(false);
             if (tblEvents != null) {
                 tblEvents.setVisible(true);
@@ -433,11 +520,11 @@ public class AdminController {
     private List<Event> fetchEventsFromDatabase() {
         List<Event> events = new ArrayList<>();
         String sql = """
-            SELECT e.eventId, e.title, e.description, e.date, e.location, e.totalSeats,
-                   (e.totalSeats - (SELECT COUNT(*) FROM seats s WHERE s.eventId = e.eventId AND s.status = 'reserved')) AS availableSeats
-            FROM events e
-            ORDER BY e.date
-            """;
+                SELECT e.eventId, e.title, e.description, e.date, e.location, e.totalSeats,
+                       (e.totalSeats - (SELECT COUNT(*) FROM seats s WHERE s.eventId = e.eventId AND s.status = 'reserved')) AS availableSeats
+                FROM events e
+                ORDER BY e.date
+                """;
 
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -463,10 +550,8 @@ public class AdminController {
             e.printStackTrace();
             throw new RuntimeException("Failed to fetch events: " + e.getMessage(), e);
         } finally {
-            // Close resources in reverse order
             try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
             try { if (pstmt != null) pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-            // DO NOT close the connection here - let the singleton manage it
         }
         return events;
     }
@@ -507,7 +592,6 @@ public class AdminController {
         } finally {
             try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
             try { if (pstmt != null) pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-            // DO NOT close connection
         }
         return 0;
     }
@@ -638,7 +722,7 @@ public class AdminController {
                     }
                 }
             } else if (requestedTotalSeats < currentTotalSeats) {
-                // Remove available seats (only if not reserved)
+                // Remove available seats
                 String deleteSql = "DELETE FROM seats WHERE seatId IN (SELECT seatId FROM seats WHERE eventId = ? AND status = 'available' ORDER BY seatId DESC LIMIT ?)";
                 int seatsToRemove = currentTotalSeats - requestedTotalSeats;
                 try (PreparedStatement pstmt = conn.prepareStatement(deleteSql)) {
@@ -678,16 +762,12 @@ public class AdminController {
              PreparedStatement pstmt = conn.prepareStatement("DELETE FROM events WHERE eventId = ?")) {
 
             pstmt.setInt(1, selectedEvent.getEventId());
-            int rowsDeleted = pstmt.executeUpdate();
+            pstmt.executeUpdate();
 
-            if (rowsDeleted > 0) {
-                if (lblEventStatus != null) lblEventStatus.setText("Event deleted successfully");
-                clearFormFields();
-                loadEventsInBackground();
-                loadAllBookings();
-            } else {
-                if (lblEventStatus != null) lblEventStatus.setText("Failed to delete event");
-            }
+            if (lblEventStatus != null) lblEventStatus.setText("Event deleted successfully");
+            clearFormFields();
+            loadEventsInBackground();
+            loadAllBookings();
 
         } catch (SQLException e) {
             e.printStackTrace();
