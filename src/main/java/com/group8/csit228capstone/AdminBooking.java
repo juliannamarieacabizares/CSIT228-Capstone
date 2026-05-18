@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class AdminBooking {
+
     private final SimpleIntegerProperty bookingId;
     private final SimpleStringProperty customerName;
     private final SimpleStringProperty eventTitle;
@@ -11,8 +12,9 @@ public class AdminBooking {
     private final SimpleStringProperty bookingDate;
     private final SimpleStringProperty paymentStatus;
 
-    public AdminBooking(String customerName, String eventTitle, String seatNumber, String bookingDate, String paymentStatus) {
-        this.bookingId = new SimpleIntegerProperty(0);
+    // Constructor with 6 parameters (including bookingId)
+    public AdminBooking(int bookingId, String customerName, String eventTitle, String seatNumber, String bookingDate, String paymentStatus) {
+        this.bookingId = new SimpleIntegerProperty(bookingId);
         this.customerName = new SimpleStringProperty(customerName);
         this.eventTitle = new SimpleStringProperty(eventTitle);
         this.seatNumber = new SimpleStringProperty(seatNumber);
@@ -20,6 +22,7 @@ public class AdminBooking {
         this.paymentStatus = new SimpleStringProperty(paymentStatus);
     }
 
+    // Getters
     public int getBookingId() { return bookingId.get(); }
     public String getCustomerName() { return customerName.get(); }
     public String getEventTitle() { return eventTitle.get(); }
@@ -27,6 +30,7 @@ public class AdminBooking {
     public String getBookingDate() { return bookingDate.get(); }
     public String getPaymentStatus() { return paymentStatus.get(); }
 
+    // Property getters for TableView
     public SimpleIntegerProperty bookingIdProperty() { return bookingId; }
     public SimpleStringProperty customerNameProperty() { return customerName; }
     public SimpleStringProperty eventTitleProperty() { return eventTitle; }

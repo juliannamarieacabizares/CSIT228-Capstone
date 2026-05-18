@@ -4,7 +4,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.effect.*?>
 
 <BorderPane style="-fx-background-color: #f0f2f5;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group8.csit228capstone.MainController">
 
@@ -89,13 +88,27 @@
                     </children>
                 </HBox>
 
-                <!-- Events Table with Book Now button column -->
+                <!-- Events Table with Refresh Button and Loading Spinner -->
                 <VBox style="-fx-background-color: white; -fx-background-radius: 12.0; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8.0, 0.0, 0.0, 2.0);" spacing="0.0">
                     <HBox style="-fx-background-color: #f8f9fc; -fx-background-radius: 12.0 12.0 0.0 0.0;">
                         <padding><Insets top="14.0" right="16.0" bottom="14.0" left="16.0" /></padding>
-                        <Label text="📋  Upcoming Events" style="-fx-font-weight: bold; -fx-text-fill: #1a1a2e; -fx-font-size: 14.0px;" />
+                        <children>
+                            <Label text="📋  Upcoming Events" style="-fx-font-weight: bold; -fx-text-fill: #1a1a2e; -fx-font-size: 14.0px;" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button fx:id="btnRefreshEvents" onAction="#handleRefreshEvents" style="-fx-background-color: #17a2b8; -fx-background-radius: 5; -fx-text-fill: white; -fx-cursor: hand;" text="⟳ Refresh" />
+                        </children>
                     </HBox>
-                    <TableView fx:id="eventTable" style="-fx-background-radius: 0.0 0.0 12.0 12.0;">
+
+                    <!-- LOADING SPINNER - SIMPLE VERSION -->
+                    <HBox fx:id="eventLoadingSpinner" alignment="CENTER" spacing="10" visible="false"
+                          style="-fx-padding: 20; -fx-background-color: white;">
+                        <ProgressIndicator maxWidth="40" />
+                        <Label text="Loading events..." style="-fx-text-fill: #64748b; -fx-font-size: 13px;" />
+                    </HBox>
+
+                    <!-- Table View -->
+                    <TableView fx:id="eventTable" style="-fx-background-radius: 0.0 0.0 12.0 12.0;"
+                               visible="true" managed="true">
                         <columns>
                             <TableColumn fx:id="colTitle" text="Event Name" prefWidth="200.0" />
                             <TableColumn fx:id="colDate" text="Date" prefWidth="120.0" />

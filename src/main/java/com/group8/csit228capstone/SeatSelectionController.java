@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import javafx.concurrent.Task;
 import javafx.scene.control.ScrollPane;
+import java.time.LocalDate;
+
 
 public class SeatSelectionController {
 
@@ -49,6 +51,19 @@ public class SeatSelectionController {
     private Map<Button, String> seatButtonMap = new HashMap<>();
 
     public void setEvent(Event event, int userId) {
+        // Check if event has passed
+        try {
+            LocalDate eventDate = LocalDate.parse(event.getDate());
+            LocalDate today = LocalDate.now();
+            if (eventDate.isBefore(today)) {
+                showAlert(AlertType.ERROR, "Event Passed", "This event occurred on " + event.getDate() + ". Cannot book tickets for past events.");
+                handleBack();
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         this.currentEvent = event;
         this.currentUserId = userId;
         lblEventName.setText("Event: " + event.getTitle());

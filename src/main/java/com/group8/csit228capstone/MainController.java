@@ -3,23 +3,25 @@ package com.group8.csit228capstone;
 import database.DatabaseConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import javafx.concurrent.Task;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import javafx.concurrent.Task;
 import java.time.LocalDate;
-
 
 public class MainController {
 
+    @FXML
+    private Button btnRefreshEvents;
 
     @FXML
     private Label lblWelcome;
@@ -34,7 +36,7 @@ public class MainController {
     private Label lblUpcomingEvents;
 
     @FXML
-    private ProgressIndicator eventLoadingSpinner;
+    private HBox eventLoadingSpinner;
 
     @FXML
     private TableView<Event> eventTable;
@@ -82,6 +84,13 @@ public class MainController {
 
     private ObservableList<Event> eventList = FXCollections.observableArrayList();
 
+    @FXML
+    private void handleRefreshEvents() {
+        loadEvents();
+        lblStatus.setText("Refreshing events...");
+    }
+
+    @FXML
     public void initialize() {
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -109,6 +118,29 @@ public class MainController {
             }
         });
 
+        // Style past events with light red background
+        eventTable.setRowFactory(tv -> new TableRow<Event>() {
+            @Override
+            protected void updateItem(Event event, boolean empty) {
+                super.updateItem(event, empty);
+                if (event == null || empty) {
+                    setStyle("");
+                } else {
+                    try {
+                        LocalDate eventDate = LocalDate.parse(event.getDate());
+                        LocalDate today = LocalDate.now();
+                        if (eventDate.isBefore(today)) {
+                            setStyle("-fx-background-color: #ffebee;"); // Light red for past events
+                        } else {
+                            setStyle("");
+                        }
+                    } catch (Exception e) {
+                        setStyle("");
+                    }
+                }
+            }
+        });
+
         if (eventLoadingSpinner != null) {
             eventLoadingSpinner.setVisible(false);
         }
@@ -116,6 +148,7 @@ public class MainController {
         loadEvents();
         setActiveMenu(btnEvents);
     }
+
     private void setActiveMenu(Button button) {
         if (activeButton != null) {
             activeButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #b0b0cc; -fx-background-radius: 8;");
@@ -126,8 +159,25 @@ public class MainController {
         }
     }
 
+    private boolean isEventPassed(Event event) {
+        try {
+            LocalDate eventDate = LocalDate.parse(event.getDate());
+            LocalDate today = LocalDate.now();
+            return eventDate.isBefore(today);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     public void loadEvents() {
-        // Show loading spinner
         if (eventLoadingSpinner != null) {
             eventLoadingSpinner.setVisible(true);
         }
@@ -180,8 +230,8 @@ public class MainController {
                     if (lblUpcomingEvents != null) lblUpcomingEvents.setText(String.valueOf(finalUpcomingCount));
                 });
 
-                // Simulate network delay (remove in production)
-                Thread.sleep(300);
+                // FOR DEMO - Make loading visible (remove or reduce for production)
+                Thread.sleep(2000);  // ← CHANGE THIS to make spinner visible longer
 
                 return events;
             }
@@ -206,8 +256,14 @@ public class MainController {
         new Thread(loadTask).start();
     }
 
-    // Direct booking from table button
     private void handleBookTicketDirect(Event selectedEvent) {
+        // Check if event has already passed
+        if (isEventPassed(selectedEvent)) {
+            lblStatus.setText("❌ This event has already passed. Cannot book tickets.");
+            showAlert("Event Passed", "This event occurred on " + selectedEvent.getDate() + ". You cannot book tickets for past events.");
+            return;
+        }
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("seat-view.fxml"));
             Scene scene = new Scene(loader.load());
@@ -238,6 +294,13 @@ public class MainController {
 
         if (selectedEvent == null) {
             lblStatus.setText("Please select an event first");
+            return;
+        }
+
+        // Check if event has already passed
+        if (isEventPassed(selectedEvent)) {
+            lblStatus.setText("❌ This event has already passed. Cannot book tickets.");
+            showAlert("Event Passed", "This event occurred on " + selectedEvent.getDate() + ". You cannot book tickets for past events.");
             return;
         }
 

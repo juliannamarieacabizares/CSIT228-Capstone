@@ -9,13 +9,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-
+import java.time.LocalDate;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class BookingHistoryController {
 
+    @FXML
+    private Label lblTotalTickets;
+
+    @FXML
+    private Label lblUpcomingBookings;
     @FXML
     private TableView<Booking> tblBookings;
 
@@ -76,21 +81,28 @@ public class BookingHistoryController {
         try {
             Connection conn = DatabaseConnection.getInstance().getConnection();
             String sql = """
-                SELECT b.bookingId, e.title, e.date, t.seatNumber, b.bookingDate
-                FROM bookings b
-                JOIN events e ON b.eventId = e.eventId
-                JOIN tickets t ON b.bookingId = t.bookingId
-                WHERE b.userId = ?
-                ORDER BY b.bookingDate DESC, t.seatNumber
-                """;
+            SELECT b.bookingId, e.title, e.date, t.seatNumber, b.bookingDate
+            FROM bookings b
+            JOIN events e ON b.eventId = e.eventId
+            JOIN tickets t ON b.bookingId = t.bookingId
+            WHERE b.userId = ?
+            ORDER BY b.bookingDate DESC, t.seatNumber
+            """;
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, currentUserId);
             ResultSet rs = pstmt.executeQuery();
 
             bookingList.clear();
+            String today = LocalDate.now().toString();
+            int upcomingCount = 0;
 
             while (rs.next()) {
+                String eventDate = rs.getString("date");
+                if (eventDate.compareTo(today) >= 0) {
+                    upcomingCount++;
+                }
+
                 Booking booking = new Booking(
                         rs.getInt("bookingId"),
                         rs.getString("title"),
@@ -103,7 +115,11 @@ public class BookingHistoryController {
 
             filteredList = new FilteredList<>(bookingList, p -> true);
             tblBookings.setItems(filteredList);
-            lblStatus.setText("Found " + bookingList.size() + " ticket(s)");
+
+            // Update stats
+            lblTotalTickets.setText(String.valueOf(bookingList.size()));
+            lblUpcomingBookings.setText(String.valueOf(upcomingCount));
+            lblStatus.setText("Showing " + bookingList.size() + " ticket(s)");
 
         } catch (Exception e) {
             e.printStackTrace();

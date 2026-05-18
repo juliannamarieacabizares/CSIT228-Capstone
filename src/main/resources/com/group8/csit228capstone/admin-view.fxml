@@ -3,122 +3,294 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group8.csit228capstone.AdminController" style="-fx-background-color: #f5f7fa;">
+<BorderPane style="-fx-background-color: #e8ecf2;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group8.csit228capstone.AdminController">
 
+    <!-- TOP NAVIGATION BAR -->
     <top>
-        <VBox style="-fx-background-color: white;">
-            <HBox alignment="CENTER_LEFT" spacing="15">
+        <VBox style="-fx-background-color: #1e293b;">
+            <padding>
+                <Insets top="14" right="24" bottom="14" left="24" />
+            </padding>
+            <HBox alignment="CENTER_LEFT" spacing="20">
                 <children>
-                    <Button fx:id="btnBackToDashboard" onAction="#handleBackToDashboard" style="-fx-background-color: transparent; -fx-text-fill: #1a1a2e; -fx-cursor: hand;" text="← Back to Dashboard">
-                        <font><Font size="14" /></font>
+                    <Button fx:id="btnBackToDashboard" onAction="#handleBackToDashboard"
+                            style="-fx-background-color: #475569; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 6; -fx-padding: 6 14;"
+                            text="← Back">
+                        <font><Font size="12" /></font>
                     </Button>
-                    <Label text="Admin Event Management" textFill="#0f2854">
-                        <font>
-                            <Font name="System Bold" size="20" />
-                        </font>
+                    <Label text="ADMIN CONTROL PANEL" textFill="white" style="-fx-font-weight: bold;">
+                        <font><Font name="System Bold" size="16" /></font>
                     </Label>
-                    <Region HBox.hgrow="ALWAYS" />
+                    <Label text="Event Management System" textFill="#94a3b8">
+                        <font><Font size="12" /></font>
+                    </Label>
                 </children>
             </HBox>
-            <Separator />
         </VBox>
     </top>
 
     <center>
-        <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
+        <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" style="-fx-background-color: transparent; -fx-padding: 15;">
             <tabs>
-                <!-- Events Tab -->
-                <Tab fx:id="tabEvents" text="Events">
+                <!-- ==================== EVENTS TAB ==================== -->
+                <Tab fx:id="tabEvents" text="📅  EVENTS" closable="false">
                     <content>
-                        <HBox spacing="20" alignment="TOP_CENTER">
+                        <VBox spacing="20" style="-fx-background-color: #e8ecf2; -fx-padding: 20;">
                             <children>
-                                <!-- Left Panel - Event Form -->
-                                <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 10;" prefWidth="350">
-                                    <children>
-                                        <Label text="Event Details" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;" />
+                                <SplitPane dividerPositions="0.35" style="-fx-background-color: transparent;">
+                                    <items>
+                                        <!-- LEFT PANEL: EVENT FORM -->
+                                        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);">
+                                            <padding>
+                                                <Insets top="20" right="18" bottom="20" left="18" />
+                                            </padding>
 
-                                        <Label text="Title" textFill="#0f2854"><font><Font size="13" /></font></Label>
-                                        <TextField fx:id="textTitle" promptText="Event title" />
-
-                                        <Label text="Description" textFill="#0f2854"><font><Font size="13" /></font></Label>
-                                        <TextField fx:id="textDescription" promptText="Event description" />
-
-                                        <Label text="Date" textFill="#0f2854"><font><Font size="13" /></font></Label>
-                                        <DatePicker fx:id="textDate" promptText="Select event date" />
-
-                                        <Label text="Location" textFill="#0f2854"><font><Font size="13" /></font></Label>
-                                        <TextField fx:id="textLocation" promptText="Event location" />
-
-                                        <Label text="Total Seats" textFill="#0f2854"><font><Font size="13" /></font></Label>
-                                        <TextField fx:id="textTotalSeats" promptText="Number of seats" />
-
-                                        <Separator />
-
-                                        <Label fx:id="lblEventStatus" text="Ready" textFill="#0f2854" />
-
-                                        <HBox spacing="10" alignment="CENTER">
                                             <children>
-                                                <Button fx:id="btnSave" onAction="#handleSave" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 5;" text="Save" />
-                                                <Button fx:id="btnUpdate" onAction="#handleUpdate" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-background-radius: 5;" text="Update" />
-                                                <Button fx:id="btnDelete" onAction="#handleDelete" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-background-radius: 5;" text="Delete" />
-                                                <Button fx:id="btnClear" onAction="#handleClear" style="-fx-background-color: #9E9E9E; -fx-text-fill: white; -fx-background-radius: 5;" text="Clear" />
-                                            </children>
-                                        </HBox>
-                                    </children>
-                                </VBox>
+                                                <VBox spacing="3">
+                                                    <Label text="✏️ EVENT DETAILS" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+                                                    <Label text="Create or edit event information" style="-fx-text-fill: #64748b; -fx-font-size: 11px;" />
+                                                </VBox>
 
-                                <!-- Right Panel - Events Table -->
-                                <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 10;" HBox.hgrow="ALWAYS">
-                                    <children>
-                                        <Label text="Events List" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;" />
-                                        <TableView fx:id="tblEvents" prefHeight="400" VBox.vgrow="ALWAYS">
-                                            <columns>
-                                                <TableColumn fx:id="colEventId" text="ID" prefWidth="50" />
-                                                <TableColumn fx:id="colTitle" text="Title" prefWidth="200" />
-                                                <TableColumn fx:id="colDate" text="Date" prefWidth="100" />
-                                                <TableColumn fx:id="colLocation" text="Location" prefWidth="150" />
-                                                <TableColumn fx:id="colAvailableSeats" text="Available" prefWidth="80" />
-                                            </columns>
-                                            <columnResizePolicy>
-                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                            </columnResizePolicy>
-                                        </TableView>
-                                    </children>
-                                </VBox>
+                                                <Separator />
+
+                                                <VBox spacing="10">
+                                                    <Label text="Event Title" style="-fx-text-fill: #334155; -fx-font-size: 12px; -fx-font-weight: bold;" />
+                                                    <TextField fx:id="textTitle" promptText="e.g., Summer Music Festival"
+                                                               style="-fx-background-radius: 6; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-padding: 8;" />
+
+                                                    <Label text="Description" style="-fx-text-fill: #334155; -fx-font-size: 12px; -fx-font-weight: bold;" />
+                                                    <TextField fx:id="textDescription" promptText="Brief description of the event"
+                                                               style="-fx-background-radius: 6; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-padding: 8;" />
+
+                                                    <Label text="Date" style="-fx-text-fill: #334155; -fx-font-size: 12px; -fx-font-weight: bold;" />
+                                                    <DatePicker fx:id="textDate" promptText="YYYY-MM-DD"
+                                                                style="-fx-background-radius: 6; -fx-border-color: #cbd5e1; -fx-border-radius: 6;" />
+
+                                                    <Label text="Location" style="-fx-text-fill: #334155; -fx-font-size: 12px; -fx-font-weight: bold;" />
+                                                    <TextField fx:id="textLocation" promptText="Venue name and address"
+                                                               style="-fx-background-radius: 6; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-padding: 8;" />
+
+                                                    <Label text="Total Seats" style="-fx-text-fill: #334155; -fx-font-size: 12px; -fx-font-weight: bold;" />
+                                                    <TextField fx:id="textTotalSeats" promptText="Maximum capacity"
+                                                               style="-fx-background-radius: 6; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-padding: 8;" />
+                                                </VBox>
+
+                                                <Separator />
+
+                                                <Label fx:id="lblEventStatus" text="✓ Ready" style="-fx-text-fill: #22c55e; -fx-font-size: 11px;" />
+
+                                                <VBox spacing="10">
+                                                    <HBox spacing="10" alignment="CENTER">
+                                                        <Button fx:id="btnSave" onAction="#handleSave"
+                                                                style="-fx-background-color: #059669; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-pref-width: 85; -fx-padding: 8;"
+                                                                text="Save">
+                                                            <font><Font size="13" /></font>
+                                                        </Button>
+                                                        <Button fx:id="btnUpdate" onAction="#handleUpdate"
+                                                                style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-pref-width: 85; -fx-padding: 8;"
+                                                                text="Update">
+                                                            <font><Font size="13" /></font>
+                                                        </Button>
+                                                        <Button fx:id="btnDelete" onAction="#handleDelete"
+                                                                style="-fx-background-color: #dc2626; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-pref-width: 85; -fx-padding: 8;"
+                                                                text="Delete">
+                                                            <font><Font size="13" /></font>
+                                                        </Button>
+                                                        <Button fx:id="btnClear" onAction="#handleClear"
+                                                                style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-pref-width: 85; -fx-padding: 8;"
+                                                                text="Clear">
+                                                            <font><Font size="13" /></font>
+                                                        </Button>
+                                                    </HBox>
+                                                </VBox>
+                                            </children>
+                                        </VBox>
+
+                                        <!-- RIGHT PANEL: EVENTS TABLE WITH SEARCH -->
+                                        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);">
+                                            <padding>
+                                                <Insets top="20" right="18" bottom="20" left="18" />
+                                            </padding>
+
+                                            <children>
+                                                <!-- Header with Title and Refresh -->
+                                                <HBox alignment="CENTER_LEFT" spacing="10">
+                                                    <Label text="📋 EVENT DIRECTORY" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+                                                    <Label text="All events in the system" style="-fx-text-fill: #64748b; -fx-font-size: 11px;" />
+                                                    <Region HBox.hgrow="ALWAYS" />
+                                                    <Button fx:id="btnRefreshEvents" onAction="#handleRefreshEvents"
+                                                            style="-fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 6 14;"
+                                                            text="Refresh">
+                                                        <font><Font size="12" /></font>
+                                                    </Button>
+                                                </HBox>
+
+                                                <!-- SEARCH BAR SECTION -->
+                                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                                    <Label text="🔍 Search:" style="-fx-text-fill: #334155; -fx-font-size: 12px; -fx-font-weight: bold;" />
+                                                    <TextField fx:id="searchEventField" promptText="Search by ID, title, location, date..."
+                                                               style="-fx-background-radius: 6; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-padding: 8; -fx-pref-width: 200;" />
+                                                    <Button fx:id="btnSearchEvent" onAction="#handleSearchEvent"
+                                                            style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 6 14;"
+                                                            text="Search">
+                                                        <font><Font size="12" /></font>
+                                                    </Button>
+                                                    <Button fx:id="btnClearEventSearch" onAction="#handleClearEventSearch"
+                                                            style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 6 14;"
+                                                            text="Clear">
+                                                        <font><Font size="12" /></font>
+                                                    </Button>
+                                                    <Label fx:id="lblEventSearchInfo" style="-fx-text-fill: #3b82f6; -fx-font-size: 11px;" />
+                                                </HBox>
+
+                                                <!-- SORT OPTIONS -->
+                                                <HBox spacing="15" alignment="CENTER_LEFT">
+                                                    <Label text="Sort by:" style="-fx-text-fill: #334155; -fx-font-size: 12px; -fx-font-weight: bold;" />
+                                                    <RadioButton text="ID" fx:id="sortEventById">
+                                                        <font><Font size="11" /></font>
+                                                    </RadioButton>
+                                                    <RadioButton text="Event Title" fx:id="sortEventByTitle">
+                                                        <font><Font size="11" /></font>
+                                                    </RadioButton>
+                                                    <RadioButton text="Date" fx:id="sortEventByDate">
+                                                        <font><Font size="11" /></font>
+                                                    </RadioButton>
+                                                    <RadioButton text="Location" fx:id="sortEventByLocation">
+                                                        <font><Font size="11" /></font>
+                                                    </RadioButton>
+                                                    <Button fx:id="btnApplyEventSort" onAction="#handleApplyEventSort"
+                                                            style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 4 12;"
+                                                            text="Apply Sort">
+                                                        <font><Font size="11" /></font>
+                                                    </Button>
+                                                </HBox>
+
+                                                <!-- LOADING SPINNER FOR EVENTS -->
+                                                <HBox fx:id="eventLoadingSpinner" alignment="CENTER" spacing="10" visible="false"
+                                                      style="-fx-padding: 30; -fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-radius: 8;">
+                                                    <ProgressIndicator maxWidth="40" />
+                                                    <Label text="Loading events..." style="-fx-text-fill: #64748b; -fx-font-size: 13px;" />
+                                                </HBox>
+
+                                                <!-- Events Table -->
+                                                <TableView fx:id="tblEvents" prefHeight="380" style="-fx-border-color: #e2e8f0; -fx-border-radius: 8;"
+                                                           visible="true" managed="true">
+                                                    <columns>
+                                                        <TableColumn fx:id="colEventId" text="ID" prefWidth="50" />
+                                                        <TableColumn fx:id="colTitle" text="Event Title" prefWidth="200" />
+                                                        <TableColumn fx:id="colDate" text="Date" prefWidth="100" />
+                                                        <TableColumn fx:id="colLocation" text="Location" prefWidth="180" />
+                                                        <TableColumn fx:id="colAvailableSeats" text="Available" prefWidth="80" />
+                                                    </columns>
+                                                    <placeholder>
+                                                        <Label text="No events found" style="-fx-text-fill: #94a3b8;" />
+                                                    </placeholder>
+                                                </TableView>
+                                            </children>
+                                        </VBox>
+                                    </items>
+                                </SplitPane>
                             </children>
-                        </HBox>
+                        </VBox>
                     </content>
                 </Tab>
 
-                <!-- All Bookings Tab -->
-                <Tab fx:id="tabBookings" text="All Bookings">
+                <!-- ==================== ALL BOOKINGS TAB ==================== -->
+                <Tab fx:id="tabBookings" text="📋  ALL BOOKINGS" closable="false">
                     <content>
-                        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 10;">
+                        <VBox spacing="20" style="-fx-background-color: #e8ecf2; -fx-padding: 20;">
                             <children>
-                                <Label text="All Customer Bookings" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;" />
+                                <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);">
+                                    <padding>
+                                        <Insets top="20" right="18" bottom="20" left="18" />
+                                    </padding>
 
-                                <TableView fx:id="tblAllBookings" prefHeight="450" VBox.vgrow="ALWAYS">
-                                    <columns>
-                                        <TableColumn fx:id="colAllBookingId" text="ID" prefWidth="60" />
-                                        <TableColumn fx:id="colAllCustomerName" text="Customer Name" prefWidth="150" />
-                                        <TableColumn fx:id="colAllEventTitle" text="Event" prefWidth="200" />
-                                        <TableColumn fx:id="colAllSeatNumber" text="Seat" prefWidth="80" />
-                                        <TableColumn fx:id="colAllBookingDate" text="Booked On" prefWidth="120" />
-                                        <TableColumn fx:id="colAllPaymentStatus" text="Payment" prefWidth="100" />
-                                    </columns>
-                                    <columnResizePolicy>
-                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                    </columnResizePolicy>
-                                </TableView>
-
-                                <HBox spacing="10" alignment="CENTER_RIGHT">
                                     <children>
-                                        <Button fx:id="btnRefreshBookings" onAction="#handleRefreshBookings" style="-fx-background-color: #17a2b8; -fx-text-fill: white; -fx-background-radius: 5;" text="⟳ Refresh" />
-                                        <Label fx:id="lblBookingStatus" text="Ready" textFill="#0f2854" />
+                                        <HBox alignment="CENTER_LEFT" spacing="10">
+                                            <Label text="📊 CUSTOMER BOOKINGS" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+                                            <Label text="All ticket purchases" style="-fx-text-fill: #64748b; -fx-font-size: 11px;" />
+                                            <Region HBox.hgrow="ALWAYS" />
+                                            <Button fx:id="btnRefreshBookings" onAction="#handleRefreshBookings"
+                                                    style="-fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 6 14;"
+                                                    text="Refresh">
+                                                <font><Font size="12" /></font>
+                                            </Button>
+                                        </HBox>
+
+                                        <!-- SEARCH BAR FOR BOOKINGS -->
+                                        <HBox spacing="10" alignment="CENTER_LEFT">
+                                            <Label text="🔍 Search Bookings:" style="-fx-text-fill: #334155; -fx-font-size: 12px; -fx-font-weight: bold;" />
+                                            <TextField fx:id="searchBookingField" promptText="Search by ID, customer, event, seat..."
+                                                       style="-fx-background-radius: 6; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-padding: 8; -fx-pref-width: 200;" />
+                                            <Button fx:id="btnSearchBooking" onAction="#handleSearchBooking"
+                                                    style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 6 14;"
+                                                    text="Search">
+                                                <font><Font size="12" /></font>
+                                            </Button>
+                                            <Button fx:id="btnClearBookingSearch" onAction="#handleClearBookingSearch"
+                                                    style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 6 14;"
+                                                    text="Clear">
+                                                <font><Font size="12" /></font>
+                                            </Button>
+                                            <Label fx:id="lblBookingSearchInfo" style="-fx-text-fill: #3b82f6; -fx-font-size: 11px;" />
+                                        </HBox>
+
+                                        <!-- SORT OPTIONS FOR BOOKINGS -->
+                                        <HBox spacing="15" alignment="CENTER_LEFT">
+                                            <Label text="Sort by:" style="-fx-text-fill: #334155; -fx-font-size: 12px; -fx-font-weight: bold;" />
+                                            <RadioButton text="ID" fx:id="sortBookingById">
+                                                <font><Font size="11" /></font>
+                                            </RadioButton>
+                                            <RadioButton text="Customer Name" fx:id="sortBookingByCustomer">
+                                                <font><Font size="11" /></font>
+                                            </RadioButton>
+                                            <RadioButton text="Event Title" fx:id="sortBookingByEvent">
+                                                <font><Font size="11" /></font>
+                                            </RadioButton>
+                                            <RadioButton text="Seat Number" fx:id="sortBookingBySeat">
+                                                <font><Font size="11" /></font>
+                                            </RadioButton>
+                                            <RadioButton text="Booking Date" fx:id="sortBookingByDate">
+                                                <font><Font size="11" /></font>
+                                            </RadioButton>
+                                            <Button fx:id="btnApplyBookingSort" onAction="#handleApplyBookingSort"
+                                                    style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 4 12;"
+                                                    text="Apply Sort">
+                                                <font><Font size="11" /></font>
+                                            </Button>
+                                        </HBox>
+
+                                        <!-- LOADING SPINNER FOR BOOKINGS -->
+                                        <HBox fx:id="bookingLoadingSpinner" alignment="CENTER" spacing="10" visible="false"
+                                              style="-fx-padding: 30; -fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-radius: 8;">
+                                            <ProgressIndicator maxWidth="40" />
+                                            <Label text="Loading bookings..." style="-fx-text-fill: #64748b; -fx-font-size: 13px;" />
+                                        </HBox>
+
+                                        <!-- Bookings Table -->
+                                        <TableView fx:id="tblAllBookings" prefHeight="380" style="-fx-border-color: #e2e8f0; -fx-border-radius: 8;"
+                                                   visible="true" managed="true">
+                                            <columns>
+                                                <TableColumn fx:id="colAllBookingId" text="ID" prefWidth="50" />
+                                                <TableColumn fx:id="colAllCustomerName" text="Customer" prefWidth="160" />
+                                                <TableColumn fx:id="colAllEventTitle" text="Event" prefWidth="200" />
+                                                <TableColumn fx:id="colAllSeatNumber" text="Seat" prefWidth="70" />
+                                                <TableColumn fx:id="colAllBookingDate" text="Booked On" prefWidth="120" />
+                                                <TableColumn fx:id="colAllPaymentStatus" text="Payment" prefWidth="100" />
+                                            </columns>
+                                            <placeholder>
+                                                <Label text="No bookings found" style="-fx-text-fill: #94a3b8;" />
+                                            </placeholder>
+                                        </TableView>
+
+                                        <!-- Footer -->
+                                        <HBox alignment="CENTER_RIGHT" spacing="8">
+                                            <Label fx:id="lblBookingStatus" text="✓ Ready" style="-fx-text-fill: #22c55e; -fx-font-size: 11px;" />
+                                        </HBox>
                                     </children>
-                                </HBox>
+                                </VBox>
                             </children>
                         </VBox>
                     </content>

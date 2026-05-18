@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -22,15 +23,25 @@ public class RegisterController {
     @FXML private TextField txtUsername;
     @FXML private TextField txtEmail;
     @FXML private PasswordField txtPassword;
+    @FXML private PasswordField txtConfirmPassword;  // ADD THIS - it was missing
+    @FXML private Label lblMessage;  // ADD THIS - it was missing
 
     @FXML
     public void handleRegister(ActionEvent event) {
         String name = txtUsername.getText();
         String email = txtEmail.getText();
         String password = txtPassword.getText();
+        String confirmPassword = txtConfirmPassword.getText();  // ADD THIS
 
+        // Validation
         if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
             showAlert("Error", "All fields are required!");
+            return;
+        }
+
+        // Check if passwords match
+        if (!password.equals(confirmPassword)) {
+            showAlert("Error", "Passwords do not match!");
             return;
         }
 
@@ -47,7 +58,7 @@ public class RegisterController {
         if (isEmailDuplicate(email)) {
             showAlert("Error", "Email is already registered!");
         } else {
-            saveUser(name, email, password);
+            saveUser(name, email, password, event);
         }
     }
 
@@ -64,13 +75,14 @@ public class RegisterController {
         return false;
     }
 
-    private void saveUser(String name, String email, String password) {
+    private void saveUser(String name, String email, String password, ActionEvent event) {
         String sql = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'customer')";
 
         try {
             Connection conn = DatabaseConnection.getInstance().getConnection();
             if (conn == null || conn.isClosed()) {
                 System.out.println("Connection was closed, attempting to reconnect...");
+                conn = DatabaseConnection.getInstance().getConnection();
             }
 
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -80,7 +92,7 @@ public class RegisterController {
                 pstmt.executeUpdate();
 
                 showAlert("Success", "Account created successfully!");
-                handleBack(new ActionEvent(txtUsername, null));
+                handleBack(event);
             }
         } catch (SQLException e) {
             System.out.println("SQL Error: " + e.getMessage());
@@ -99,17 +111,26 @@ public class RegisterController {
     @FXML
     private void handleBack(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("login-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("login-view.fxml"));
+            Parent root = loader.load();
+
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            boolean wasMaximized = stage.isMaximized();
+
             Scene scene = new Scene(root);
             stage.setScene(scene);
+
+            if (wasMaximized) {
+                stage.setMaximized(true);
+            }
+
             stage.setTitle("Event Ticketing System - Login");
-            stage.setWidth(480);
-            stage.setHeight(600);
-            stage.setMinWidth(420);
-            stage.setMinHeight(500);
+
         } catch (IOException e) {
             e.printStackTrace();
+            if (lblMessage != null) {
+                lblMessage.setText("Error loading login page");
+            }
         }
     }
 }
