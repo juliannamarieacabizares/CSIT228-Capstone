@@ -21,17 +21,22 @@
                   <Insets top="40.0" right="40.0" bottom="40.0" left="40.0" />
                </padding>
                <children>
-                  <!-- Title Section -->
+                  <!-- SwiftTix Branding -->
                   <VBox alignment="CENTER" spacing="5">
-                     <Label text="🎟️" style="-fx-font-size: 48px;" />
-                     <Label text="Event Ticketing System" textFill="#1a1a2e" wrapText="true" alignment="CENTER">
+                     <Label text="⚡" style="-fx-font-size: 48px; -fx-text-fill: #FBBF24;" />
+                     <Label text="SwiftTix" textFill="#1a1a2e" wrapText="true" alignment="CENTER">
                         <font>
-                           <Font name="System Bold" size="22" />
+                           <Font name="System Bold" size="28" />
                         </font>
                      </Label>
-                     <Label text="Book your tickets with ease" textFill="#888888">
+                     <Label text="Event Ticketing System" textFill="#888888">
                         <font>
                            <Font size="13" />
+                        </font>
+                     </Label>
+                     <Label text="Fast. Simple. Secure." textFill="#22c55e" style="-fx-font-style: italic;">
+                        <font>
+                           <Font size="11" />
                         </font>
                      </Label>
                   </VBox>

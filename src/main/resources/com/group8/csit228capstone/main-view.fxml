@@ -16,7 +16,8 @@
                 </padding>
                 <children>
                     <Label text="🎟️" style="-fx-font-size: 28.0px;" />
-                    <Label text="Event Ticketing System" style="-fx-font-size: 20.0px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                    <Label text="⚡ SwiftTix" style="-fx-font-size: 20.0px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                    <Label text="Event Ticketing System" style="-fx-text-fill: #a0a0c0; -fx-font-size: 12px;" />
                     <Region HBox.hgrow="ALWAYS" />
                     <Label fx:id="lblWelcome" text="Welcome, User" style="-fx-text-fill: #a0a0c0;" />
                 </children>

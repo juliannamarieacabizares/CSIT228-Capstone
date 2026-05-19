@@ -7,7 +7,7 @@
 
 <BorderPane style="-fx-background-color: #e8ecf2;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group8.csit228capstone.AdminController">
 
-    <!-- TOP NAVIGATION BAR -->
+    <!-- TOP NAVIGATION BAR with SwiftTix Branding -->
     <top>
         <VBox style="-fx-background-color: #1e293b;">
             <padding>
@@ -20,8 +20,12 @@
                             text="← Back">
                         <font><Font size="12" /></font>
                     </Button>
+                    <!-- SwiftTix Logo -->
+                    <Label text="⚡ SwiftTix" textFill="#FBBF24" style="-fx-font-weight: bold;">
+                        <font><Font name="System Bold" size="18" /></font>
+                    </Label>
                     <Label text="ADMIN CONTROL PANEL" textFill="white" style="-fx-font-weight: bold;">
-                        <font><Font name="System Bold" size="16" /></font>
+                        <font><Font name="System Bold" size="14" /></font>
                     </Label>
                     <Label text="Event Management System" textFill="#94a3b8">
                         <font><Font size="12" /></font>
@@ -99,8 +103,8 @@
                                                             <font><Font size="13" /></font>
                                                         </Button>
                                                         <Button fx:id="btnClear" onAction="#handleClear"
-                                                            style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-pref-width: 85; -fx-padding: 8;"
-                                                            text="Clear">
+                                                                style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-pref-width: 85; -fx-padding: 8;"
+                                                                text="Clear">
                                                             <font><Font size="13" /></font>
                                                         </Button>
                                                     </HBox>
@@ -144,7 +148,7 @@
                                                     <Label fx:id="lblEventSearchInfo" style="-fx-text-fill: #3b82f6; -fx-font-size: 11px;" />
                                                 </HBox>
 
-                                                <!-- SORT OPTIONS - RadioButtons (ToggleGroup handled in Controller) -->
+                                                <!-- SORT OPTIONS -->
                                                 <HBox spacing="15" alignment="CENTER_LEFT">
                                                     <Label text="Sort by:" style="-fx-text-fill: #334155; -fx-font-size: 12px; -fx-font-weight: bold;" />
                                                     <RadioButton text="ID" fx:id="sortEventById" selected="true">
@@ -190,6 +194,11 @@
                                         </VBox>
                                     </items>
                                 </SplitPane>
+
+                                <!-- Footer with SwiftTix -->
+                                <HBox alignment="CENTER_RIGHT" spacing="8">
+                                    <Label text="⚡ SwiftTix - Fast. Simple. Secure." style="-fx-text-fill: #94a3b8; -fx-font-size: 10px;" />
+                                </HBox>
                             </children>
                         </VBox>
                     </content>
@@ -235,7 +244,7 @@
                                             <Label fx:id="lblBookingSearchInfo" style="-fx-text-fill: #3b82f6; -fx-font-size: 11px;" />
                                         </HBox>
 
-                                        <!-- SORT OPTIONS - RadioButtons -->
+                                        <!-- SORT OPTIONS -->
                                         <HBox spacing="15" alignment="CENTER_LEFT">
                                             <Label text="Sort by:" style="-fx-text-fill: #334155; -fx-font-size: 12px; -fx-font-weight: bold;" />
                                             <RadioButton text="ID" fx:id="sortBookingById" selected="true">
@@ -282,11 +291,17 @@
                                             </placeholder>
                                         </TableView>
 
+                                        <!-- Footer -->
                                         <HBox alignment="CENTER_RIGHT" spacing="8">
                                             <Label fx:id="lblBookingStatus" text="✓ Ready" style="-fx-text-fill: #22c55e; -fx-font-size: 11px;" />
                                         </HBox>
                                     </children>
                                 </VBox>
+
+                                <!-- Footer with SwiftTix -->
+                                <HBox alignment="CENTER_RIGHT" spacing="8">
+                                    <Label text="⚡ SwiftTix - Fast. Simple. Secure." style="-fx-text-fill: #94a3b8; -fx-font-size: 10px;" />
+                                </HBox>
                             </children>
                         </VBox>
                     </content>

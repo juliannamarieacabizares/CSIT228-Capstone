@@ -19,7 +19,7 @@ public class MainApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load());
 
         // Set window properties
-        stage.setTitle("Event Ticketing System - Login");
+        stage.setTitle("SwiftTix - Event Ticketing System - Login");
         stage.setScene(scene);
         stage.setWidth(480);
         stage.setHeight(600);
